@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
 
 from service.django_logs import DjangoLogFetcher
-from config.tele import send_message
+from config.telegram import send_message
 from config.env import  THRESHOLD_SQLI, SECONDS_WINDOW
 
 load_dotenv()
