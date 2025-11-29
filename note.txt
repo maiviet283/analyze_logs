@@ -1,0 +1,7 @@
+django_fetcher.print_sample_logs(n=5, drop_columns=["message"], flatten=True, json_path="sample/zeek_sample.json", csv_path="sample/zeek_sample.csv")
+
+zeek: ddos
+django: sql-injection, xss, csrf
+nginx: brute-force, scan-path
+
+method : "POST" and (path : "/admin/login/" or path : "/api/customers/login/")

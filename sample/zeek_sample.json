@@ -1,0 +1,26 @@
+[
+  {
+    "@version":"1",
+    "@timestamp":"2025-11-21T03:12:09.956Z",
+    "tags":[
+      "beats_input_raw_event",
+      "zeek"
+    ],
+    "log_type":"zeek",
+    "ecs.version":"1.12.0",
+    "host.name":"zeek-elk-server",
+    "zeek.resp_p":"80",
+    "zeek.resp_h":"192.168.47.129",
+    "zeek.orig_p":"46891",
+    "zeek.service":"",
+    "zeek.proto":"1",
+    "zeek.orig_h":"192.168.47.1",
+    "zeek.status":"normal",
+    "agent.name":"zeek-elk-server",
+    "agent.type":"filebeat",
+    "agent.hostname":"zeek-elk-server",
+    "agent.version":"7.17.29",
+    "agent.ephemeral_id":"a3ac18ae-493b-4455-a499-3a830df203b7",
+    "agent.id":"8acf38fd-81a2-4210-95d7-38d65c220fb0"
+  }
+]
