@@ -1,8 +1,11 @@
 import os
+import time
 import asyncio
 from dotenv import load_dotenv
 
 from controller.zeek_logs import check_zeek_scanner
+from controller.nginx_logs import check_nginx_bruteforce
+
 from alert.workers import alert_worker
 from config.elastic import es_async_client
 
@@ -12,9 +15,23 @@ SECONDS_WINDOW = int(os.getenv("SECONDS_WINDOW", 10))
 
 
 async def analysis_loop():
+    next_run = time.time()
+
     while True:
+        start = time.time()
+        
         await check_zeek_scanner()
-        await asyncio.sleep(SECONDS_WINDOW)
+        # await check_nginx_bruteforce()
+
+
+        next_run += SECONDS_WINDOW
+        sleep_time = next_run - time.time()
+
+        if sleep_time > 0:
+            await asyncio.sleep(sleep_time)
+
+        end = time.time()
+        print(f"=== Hoàn thành vòng phân tích trong {end - start:.2f} giây ===")
 
 
 async def main():

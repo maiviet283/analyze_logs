@@ -1,0 +1,84 @@
+[
+  {
+    "@timestamp": "2025-12-01T02:30:03.000Z",
+    "ip": "192.168.47.1",
+    "bytes_sent": "1809",
+    "agent": {
+      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
+      "name": "django-server",
+      "type": "filebeat",
+      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
+      "version": "8.19.7"
+    },
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "url": "/api/",
+    "@version": "1",
+    "log": {
+      "offset": 15625,
+      "file": {
+        "path": "/var/log/nginx/access.log"
+      }
+    },
+    "log_type": "nginx",
+    "input": {
+      "type": "log"
+    },
+    "time_local": "01/Dec/2025:09:30:03 +0700",
+    "host": {
+      "name": "django-server"
+    },
+    "method": "GET",
+    "tags": [
+      "nginx",
+      "beats_input_codec_plain_applied"
+    ],
+    "http_version": "1.1",
+    "user_agent": "curl/8.16.0",
+    "referer": "-",
+    "status": "404",
+    "message": "192.168.47.1 - - [01/Dec/2025:09:30:03 +0700] \"GET /api/ HTTP/1.1\" 404 1809 \"-\" \"curl/8.16.0\""
+  },
+  {
+    "@timestamp": "2025-12-01T02:30:03.000Z",
+    "ip": "192.168.47.1",
+    "bytes_sent": "1809",
+    "agent": {
+      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
+      "name": "django-server",
+      "type": "filebeat",
+      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
+      "version": "8.19.7"
+    },
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "url": "/api/",
+    "@version": "1",
+    "log": {
+      "offset": 15531,
+      "file": {
+        "path": "/var/log/nginx/access.log"
+      }
+    },
+    "log_type": "nginx",
+    "input": {
+      "type": "log"
+    },
+    "time_local": "01/Dec/2025:09:30:03 +0700",
+    "host": {
+      "name": "django-server"
+    },
+    "method": "GET",
+    "tags": [
+      "nginx",
+      "beats_input_codec_plain_applied"
+    ],
+    "http_version": "1.1",
+    "user_agent": "curl/8.16.0",
+    "referer": "-",
+    "status": "404",
+    "message": "192.168.47.1 - - [01/Dec/2025:09:30:03 +0700] \"GET /api/ HTTP/1.1\" 404 1809 \"-\" \"curl/8.16.0\""
+  }
+]

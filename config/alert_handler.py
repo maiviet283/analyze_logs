@@ -8,7 +8,7 @@ async def process_alert(client: httpx.AsyncClient, content: str, threat_type: st
 
     final_message = (
         f"{content}\n"
-        f"Hành động đề xuất bởi AI:\n{ai_action}"
+        f"Hành động đề xuất bởi AI: {ai_action}"
     )
 
     await send_telegram_message(client, final_message)
