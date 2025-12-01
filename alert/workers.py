@@ -4,7 +4,6 @@ from config.alert_handler import process_alert
 
 alert_queue = asyncio.Queue()
 
-
 async def alert_worker():
     async with httpx.AsyncClient() as client:
         while True:
