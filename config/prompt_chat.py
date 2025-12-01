@@ -6,6 +6,8 @@ load_dotenv()
 SECONDS_WINDOW=os.getenv("SECONDS_WINDOW", 10)
 THRESHOLD_REQUESTS=os.getenv("THRESHOLD_REQUESTS", 500)
 
+NGINX_BRUTE_THRESHOLD = os.getenv("NGINX_BRUTE_THRESHOLD", 10)
+
 
 template = (
     "Bạn là trợ lý chuyên về bảo mật và phân tích logs "
@@ -42,8 +44,11 @@ def system_prompt_sqli() -> str:
 
 def system_prompt_bruteforce() -> str:
     return (
-        "Bạn là trợ lý phân tích brute-force. "
-        "Chỉ trả về văn bản thuần, không markdown, không xuống dòng. "
-        "Khoảng 30 chữ. "
+        template + 
+        "Bạn là trợ lý phân tích brute-force"
         "Khuyến nghị tăng delay login, limit per IP, chặn ngắn hạn theo mức độ."
+        "Cho nên khi request càng nhiều thì bạn càng cần khuyến nghị các biện pháp mạnh mẽ hơn."
+        f"Chặn IP tạm thời từ 1 phút đến 24 giờ tùy mức độ nghiêm trọng. theo khoảng {NGINX_BRUTE_THRESHOLD} - {NGINX_BRUTE_THRESHOLD * 100} requests: chặn 5 phút-20 giờ, "
+        "Thời gian chặn càng lâu nếu số requests càng cao, nếu số requests chỉ hơi vượt ngưỡng thì chặn ngắn thôi."
+        f"Bạn sẽ tự tính thời gian chặn dựa trên số requests so với mốc cảnh báo. ({NGINX_BRUTE_THRESHOLD} requests trong {SECONDS_WINDOW} giây)."
     )

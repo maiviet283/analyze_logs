@@ -7,7 +7,7 @@ OUTPUT_FILE = "nginx_sample.json"
 INDEX = "nginx-logs-*"
 
 
-async def fetch_nginx_sample(seconds=10, size=200):
+async def fetch_nginx_sample(seconds=100, size=200):
     now_utc = datetime.now(timezone.utc)
     start_utc = now_utc - timedelta(seconds=seconds)
 

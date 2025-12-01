@@ -6,7 +6,7 @@ from alert.workers import alert_queue
 load_dotenv()
 
 SECONDS_WINDOW = int(os.getenv("SECONDS_WINDOW", 10))
-NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 20))
+NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 50))
 
 nginx_fetcher = NginxLogFetcher()
 
@@ -23,15 +23,20 @@ async def check_nginx_bruteforce():
 
     suspicious = results["suspicious_ips"]
     alert_times = results["alert_times"]
+    df = results["df"]
 
     for item in suspicious:
         ip_addr = item["ip"]
         time_str = alert_times[ip_addr]
 
+        # lấy user-agent đầu tiên
+        ua = df[df["ip"] == ip_addr]["user_agent"].iloc[0]
+
         base_message = (
             f"[Bruteforce ALERT] {time_str}\n"
-            f"IP {ip_addr}\n"
-            f"Gửi {item['request_count']} POST login trong {SECONDS_WINDOW} giây"
+            f" - IP: {ip_addr}\n"
+            f" - Số lần POST login: {item['request_count']} trong {SECONDS_WINDOW} giây\n"
+            f" - User-Agent: {ua}"
         )
 
         await alert_queue.put({

@@ -21,7 +21,7 @@ async def analysis_loop():
         start = time.time()
         
         await check_zeek_scanner()
-        # await check_nginx_bruteforce()
+        await check_nginx_bruteforce()
 
 
         next_run += SECONDS_WINDOW
