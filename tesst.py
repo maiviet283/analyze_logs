@@ -3,8 +3,8 @@ import json
 from datetime import datetime, timedelta, timezone
 from config.elastic import es_async_client
 
-OUTPUT_FILE = "nginx_sample.json"
-INDEX = "nginx-logs-*"
+OUTPUT_FILE = "sample/django_sample.json"
+INDEX = "django-logs-*"
 
 
 async def fetch_nginx_sample(seconds=100, size=200):

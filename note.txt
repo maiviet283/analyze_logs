@@ -4,4 +4,5 @@ zeek: ddos
 django: sql-injection, xss, csrf
 nginx: brute-force, scan-path
 
+nginx brute-force
 method : "POST" and (path : "/admin/login/" or path : "/api/customers/login/")

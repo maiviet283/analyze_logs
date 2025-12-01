@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from controller.zeek_logs import check_zeek_scanner
 from controller.nginx_logs import check_nginx_bruteforce
+from controller.django_logs import check_django_sqli
 
 from alert.workers import alert_worker
 from config.elastic import es_async_client
@@ -22,6 +23,7 @@ async def analysis_loop():
         
         await check_zeek_scanner()
         await check_nginx_bruteforce()
+        await check_django_sqli()
 
 
         next_run += SECONDS_WINDOW

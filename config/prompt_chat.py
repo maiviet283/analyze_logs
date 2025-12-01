@@ -4,9 +4,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SECONDS_WINDOW=os.getenv("SECONDS_WINDOW", 10)
-THRESHOLD_REQUESTS=os.getenv("THRESHOLD_REQUESTS", 500)
 
+THRESHOLD_REQUESTS=os.getenv("THRESHOLD_REQUESTS", 500)
 NGINX_BRUTE_THRESHOLD = os.getenv("NGINX_BRUTE_THRESHOLD", 10)
+THRESHOLD_SQLI = os.getenv("THRESHOLD_SQLI", 3)
 
 
 template = (
@@ -36,10 +37,12 @@ def system_prompt_ddos() -> str:
 
 def system_prompt_sqli() -> str:
     return (
+        template + 
         "Bạn là trợ lý chuyên về SQL injection. "
-        "Chỉ trả về văn bản thuần, không markdown, không xuống dòng. "
-        "Khoảng 30 chữ. "
-        "Gợi ý kiểm tra input, lọc payload, tăng logging, chặn tạm IP 10-60 phút tùy nặng nhẹ."
+        "Khi phát hiện dấu hiệu tấn công SQL injection, bạn khuyến nghị chặn IP ngay lập tức."
+        "Chặn IP tạm thời từ 1 phút đến 90 phút tùy mức độ nghiêm trọng."
+        f"Thời gian chặn phụ thuộc vào số lần phát hiện tấn công SQL injection từ IP đó,"
+        f"với ngưỡng cảnh báo là {THRESHOLD_SQLI} lần trong {SECONDS_WINDOW} giây."
     )
 
 def system_prompt_bruteforce() -> str:

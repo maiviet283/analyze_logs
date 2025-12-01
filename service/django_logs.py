@@ -1,55 +1,42 @@
 import re
 import pandas as pd
-from .base_logs import BaseLogFetcher
+from urllib.parse import unquote
 from datetime import datetime, timedelta, timezone
+from .base_logs import BaseLogFetcher
 
+
+SQLI_PATTERN = re.compile(
+    r"(?i)("
+    r"(\bor\b|\band\b)\s+(\d+|'[^']*'|true|false)\s*=\s*(\d+|'[^']*'|true|false)"
+    r"|(['\"]\s*--\s*$)"
+    r"|(\bunion\b\s+\bselect\b)"
+    r"|(\bdrop\b\s+\btable\b)"
+    r"|(\binsert\b\s+into\b)"
+    r"|(\bupdate\b\s+.+\bset\b)"
+    r"|(\bdelete\b\s+\bfrom\b)"
+    r"|(\bselect\b.+\bfrom\b)"
+    r"|(\b1\s*=\s*1\b)"
+    r"|(;?\s*shutdown\b)"
+    r")"
+)
 
 class DjangoLogFetcher(BaseLogFetcher):
     def __init__(self):
         super().__init__(index_pattern="django-logs-*")
-        
-    
-    def fetch_logs(self, seconds=30, size=None, fields=None, methods=None, paths=None) -> pd.DataFrame:
-        """
-        Lấy logs trong X giây gần nhất + lọc theo method + path nếu cung cấp.
-        """
 
-        size = size or self.default_size
+    async def fetch_logs(self, seconds=30, size=5000, paths=None):
+        now = datetime.now(timezone.utc)
+        start = now - timedelta(seconds=seconds)
 
-        # Tính thời gian theo UTC
-        now_utc = datetime.now(timezone.utc)
-        start_utc = now_utc - timedelta(seconds=seconds)
-
-        gte_ts = self.to_es_timestamp(start_utc)
-        lte_ts = self.to_es_timestamp(now_utc)
-
-        # Điều kiện MUST
         must_conditions = [
-            {
-                "range": {
-                    "@timestamp": {
-                        "gte": gte_ts,
-                        "lte": lte_ts
-                    }
-                }
-            }
+            {"range": {"@timestamp": {"gte": start.isoformat(), "lte": now.isoformat()}}},
+            {"term": {"method.keyword": "POST"}},
         ]
 
-        # Filter theo HTTP method
-        if methods:
-            must_conditions.append({
-                "terms": {
-                    "method.keyword": methods
-                }
-            })
-
-        # Filter theo đường dẫn (path) — SỬA LẠI TOÀN BỘ Ở ĐÂY
         if paths:
             must_conditions.append({
                 "bool": {
-                    "should": [
-                        {"match_phrase": {"path": p}} for p in paths
-                    ],
+                    "should": [{"match_phrase": {"full_path": p}} for p in paths],
                     "minimum_should_match": 1
                 }
             })
@@ -57,63 +44,56 @@ class DjangoLogFetcher(BaseLogFetcher):
         query = {
             "sort": [{"@timestamp": {"order": "desc"}}],
             "size": size,
-            "query": {
-                "bool": {
-                    "must": must_conditions
-                }
-            }
+            "_source": ["@timestamp", "ip", "method", "full_path", "body",
+                        "user_agent", "status_code"],
+            "query": {"bool": {"must": must_conditions}}
         }
 
-        # Lấy đúng các field bạn yêu cầu
-        if fields:
-            query["_source"] = fields
-
-        # Truy vấn Elasticsearch
-        res = self.es.search(index=self.index_pattern, body=query)
-        logs = [hit["_source"] for hit in res["hits"]["hits"]]
-
-        return pd.DataFrame(logs)
+        res = await self.es.search(index=self.index_pattern, body=query)
+        hits = [h["_source"] for h in res["hits"]["hits"]]
+        return pd.DataFrame(hits)
 
 
-    def fetch_and_save_latest_logs(
-        self,
-        n=10,
-        flatten=True,
-        json_path="latest_logs.json",
-        csv_path="latest_logs.csv"
-    ):
-        """
-        Lấy n logs mới nhất, flatten dict nếu cần, và lưu ra JSON + CSV.
-        """
-        query = {
-            "sort": [{"@timestamp": {"order": "desc"}}],
-            "size": n,
-            "query": {"match_all": {}}
+    async def detect_sql_injection(self, seconds=10, threshold=3):
+        df = await self.fetch_logs(
+            seconds=seconds,
+            paths=["/api/customers/login/", "/admin/login/"]
+        )
+        
+        print(f"[DEBUG] Django logs fetched: {len(df)} entries")
+
+        if df.empty:
+            return {"status": "no_data", "message": f"Không có dữ liệu POST trong {seconds} giây"}
+
+        # Chỉ giữ những log có body
+        df["decoded_body"] = df["body"].apply(lambda x: unquote(str(x)))
+
+        # Kiểm tra SQL injection trong body
+        df["is_sqli"] = df["decoded_body"].apply(
+            lambda x: bool(SQLI_PATTERN.search(x))
+        )
+
+        sqli_logs = df[df["is_sqli"]]
+
+        if sqli_logs.empty:
+            return {"status": "safe", "message": "Không có SQL Injection phát hiện"}
+
+        # Đếm theo IP
+        counter = sqli_logs.groupby("ip").size().reset_index(name="count")
+        suspicious = counter[counter["count"] >= threshold]
+
+        if suspicious.empty:
+            return {"status": "safe", "message": "SQLi có xuất hiện nhưng chưa vượt ngưỡng cảnh báo"}
+
+        alert_times = {}
+        for ip in suspicious["ip"]:
+            first = sqli_logs[sqli_logs["ip"] == ip]["@timestamp"].min()
+            alert_times[ip] = first
+
+        return {
+            "status": "ok",
+            "seconds_window": seconds,
+            "threshold": threshold,
+            "suspicious_ips": suspicious.to_dict(orient="records"),
+            "alert_times": alert_times
         }
-
-        res = self.es.search(index=self.index_pattern, body=query)
-        logs = [hit["_source"] for hit in res["hits"]["hits"]]
-
-        df = pd.DataFrame(logs)
-
-        if flatten:
-            dict_columns = [c for c in df.columns if df[c].apply(lambda x: isinstance(x, dict)).any()]
-            for col in dict_columns:
-                normalized = pd.json_normalize(df[col]).add_prefix(f"{col}.")
-                df = df.drop(columns=[col]).join(normalized)
-
-        pd.set_option('display.max_columns', None)
-        pd.set_option('display.width', 200)
-        pd.set_option('display.max_colwidth', None)
-
-        # xuất file JSON
-        if json_path:
-            df.to_json(json_path, orient='records', force_ascii=False, indent=2)
-            print(f"Đã xuất ra file JSON: {json_path}")
-
-        # xuất file CSV
-        if csv_path:
-            df.to_csv(csv_path, index=False)
-            print(f"Đã xuất ra file CSV: {csv_path}")
-
-        return df
