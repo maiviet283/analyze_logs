@@ -8,7 +8,7 @@ load_dotenv()
 django_fetcher = DjangoLogFetcher()
 
 SECONDS_WINDOW = int(os.getenv("SECONDS_WINDOW", 10))
-THRESHOLD_SQLI = int(os.getenv("THRESHOLD_SQLI", 3))
+THRESHOLD_SQLI = int(os.getenv("THRESHOLD_SQLI", 5))
 
 async def check_django_sqli():
     results = await django_fetcher.detect_sql_injection(
@@ -25,15 +25,25 @@ async def check_django_sqli():
         count = item["count"]
         time_str = results["alert_times"][ip_addr]
 
+        detail = results["details"][ip_addr]
+
+        ua = "".join(detail["user_agents"])
+        paths = "\n    ".join(detail["full_paths"])
+        bodies = "\n    ".join(detail["decoded_bodies"][:3])
+
         message = (
             f"[SQL Injection ALERT]\n"
             f" - IP: {ip_addr}\n"
-            f" - Thời điểm đầu tiên: {time_str}\n"
-            f" - Số lần tấn công: {count}\n"
             f" - Trong {results['seconds_window']} giây"
+            f" - Lần xuất hiện đầu: {time_str}\n"
+            f" - Tổng số lần: {count}\n"
+            f" - User-Agents:\n    {ua}\n"
+            f" - Full Paths:\n    {paths}\n"
+            f" - Payload mẫu (decoded):\n    {bodies}"
         )
 
         await alert_queue.put({
             "content": message,
             "threat_type": "sqli"
         })
+

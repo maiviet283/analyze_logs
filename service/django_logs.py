@@ -7,17 +7,74 @@ from .base_logs import BaseLogFetcher
 
 SQLI_PATTERN = re.compile(
     r"(?i)("
-    r"(\bor\b|\band\b)\s+(\d+|'[^']*'|true|false)\s*=\s*(\d+|'[^']*'|true|false)"
-    r"|(['\"]\s*--\s*$)"
-    r"|(\bunion\b\s+\bselect\b)"
-    r"|(\bdrop\b\s+\btable\b)"
-    r"|(\binsert\b\s+into\b)"
-    r"|(\bupdate\b\s+.+\bset\b)"
-    r"|(\bdelete\b\s+\bfrom\b)"
-    r"|(\bselect\b.+\bfrom\b)"
-    r"|(\b1\s*=\s*1\b)"
-    r"|(;?\s*shutdown\b)"
-    r")"
+
+    # Boolean-based
+    r"\bor\b\s+\d+\s*=\s*\d+"
+    r"|\bor\b\s+'[^']+'\s*=\s*'[^']+'"
+    r"|\band\b\s+\d+\s*=\s*\d+"
+    r"|\band\b\s+'[^']+'\s*=\s*'[^']+'"
+    r"|\bor\s+true\b"
+    r"|\bor\s+1=1\b"
+    r"|\band\s+1=1\b"
+    r"|\bor\s+'x'='x'"
+
+    # Union-based
+    r"|\bunion\b\s+(\ball\b\s+)?\bselect\b"
+    r"|\bunion\b.*\bselect\b.*(from|version|user|database)"
+
+    # Stacked queries
+    r"|;.*\bdrop\b\s+\btable\b"
+    r"|;.*\bshutdown\b"
+    r"|;.*\bupdate\b"
+    r"|;.*\binsert\b"
+    r"|;.*\bdelete\b\s+from\b"
+
+    # UPDATE/INSERT/DELETE patterns
+    r"|\bupdate\b\s+\w+\s+\bset\b"
+    r"|\binsert\b\s+into\b"
+    r"|\bdelete\b\s+from\b"
+
+    # SELECT patterns
+    r"|\bselect\b.+\bfrom\b"
+    r"|\bselect\b\s+\*?\s*from\b"
+
+    # Error-based injections (MySQL)
+    r"|\bextractvalue\s*\("
+    r"|\bupdatexml\s*\("
+    r"|\bgeometrycollection\s*\("
+    r"|\bpolygon\s*\("
+    r"|\bconvert\s*\("
+    r"|\bconcat_ws\s*\("
+    r"|\bbenchmark\s*\("
+    r"|\brand\s*\("
+    r"|\bif\s*\(.*sleep"
+
+    # Time-based
+    r"|\bsleep\s*\("
+    r"|\bwaitfor\s+delay\b"
+
+    # Comments (SQL)
+    r"|--"
+    r"|#"
+    r"|/\*.*\*/"
+
+    # Hex-based
+    r"|0x[0-9a-fA-F]+"
+
+    # SQL keywords unlikely in login
+    r"|\border\b\s+by\b"
+    r"|\bgroup\b\s+by\b"
+
+    # Payload signs: `'='` trick
+    r"|'[^']*'\s*=\s*'[^']*'"
+
+    # URL encoded injections
+    r"|%27"
+    r"|%23"
+    r"|%2F%2A"
+    r"|%2D%2D"
+
+    ")"
 )
 
 class DjangoLogFetcher(BaseLogFetcher):
@@ -86,14 +143,26 @@ class DjangoLogFetcher(BaseLogFetcher):
             return {"status": "safe", "message": "SQLi có xuất hiện nhưng chưa vượt ngưỡng cảnh báo"}
 
         alert_times = {}
+        alert_details = {}
+        
         for ip in suspicious["ip"]:
+            logs = sqli_logs[sqli_logs["ip"] == ip]
+            
             first = sqli_logs[sqli_logs["ip"] == ip]["@timestamp"].min()
             alert_times[ip] = first
+            
+            alert_details[ip] = {
+                "user_agents": logs["user_agent"].unique().tolist(),
+                "full_paths": logs["full_path"].unique().tolist(),
+                "bodies": logs["body"].tolist(),
+                "decoded_bodies": logs["decoded_body"].tolist()
+            }
 
         return {
             "status": "ok",
             "seconds_window": seconds,
             "threshold": threshold,
             "suspicious_ips": suspicious.to_dict(orient="records"),
-            "alert_times": alert_times
+            "alert_times": alert_times,
+            "details": alert_details
         }

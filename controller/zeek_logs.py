@@ -6,7 +6,7 @@ from alert.workers import alert_queue
 load_dotenv()
 
 SECONDS_WINDOW = int(os.getenv("SECONDS_WINDOW", 10))
-THRESHOLD_REQUESTS = int(os.getenv("THRESHOLD_REQUESTS", 1000))
+THRESHOLD_REQUESTS = int(os.getenv("THRESHOLD_REQUESTS", 500))
 
 zeek_fetcher = ZeekLogFetcher()
 

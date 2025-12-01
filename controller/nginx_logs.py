@@ -6,7 +6,7 @@ from alert.workers import alert_queue
 load_dotenv()
 
 SECONDS_WINDOW = int(os.getenv("SECONDS_WINDOW", 10))
-NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 50))
+NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 100))
 
 nginx_fetcher = NginxLogFetcher()
 
