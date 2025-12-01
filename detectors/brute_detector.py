@@ -1,5 +1,6 @@
 import asyncio
 from collections import defaultdict
+from alert.anti_spam import can_alert
 from alert.workers import alert_queue
 
 FAILED = defaultdict(int)
@@ -20,12 +21,6 @@ async def realtime_bruteforce_detector(streamer):
         LAST[ip] = asyncio.get_event_loop().time()
 
         if FAILED[ip] >= THRESHOLD:
-            msg = f"[Brute-Force ALERT]\n - IP: {ip}\n - Attempts: {FAILED[ip]}"
-            await alert_queue.put({"content": msg, "threat_type": "bruteforce"})
-
-        # cleanup
-        now = asyncio.get_event_loop().time()
-        for k in list(FAILED.keys()):
-            if now - LAST[k] > EXPIRE:
-                del FAILED[k]
-                del LAST[k]
+            if can_alert(ip):
+                msg = f"[Brute-Force ALERT]\n - IP: {ip}\n - Attempts: {FAILED[ip]}"
+                await alert_queue.put({"content": msg, "threat_type": "bruteforce"})
