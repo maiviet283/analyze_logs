@@ -1,289 +1,195 @@
-[
-  {
-    "@timestamp": "2025-12-01T02:31:04.000Z",
-    "ip": "192.168.47.1",
-    "bytes_sent": "1809",
-    "agent": {
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "name": "django-server",
-      "type": "filebeat",
-      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
-      "version": "8.19.7"
-    },
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "url": "/login/",
-    "@version": "1",
-    "log": {
-      "offset": 21171,
-      "file": {
-        "path": "/var/log/nginx/access.log"
-      }
-    },
-    "log_type": "nginx",
-    "input": {
-      "type": "log"
-    },
-    "time_local": "01/Dec/2025:09:31:04 +0700",
-    "host": {
-      "name": "django-server"
-    },
-    "method": "GET",
-    "tags": [
-      "nginx",
-      "beats_input_codec_plain_applied"
-    ],
+{
+  "_index": "nginx-logs-2025.12.02",
+  "_type": "_doc",
+  "_id": "jQxF3ZoBorga73KIUh-K",
+  "_version": 1,
+  "_score": 1,
+  "_ignored": [
+    "message.keyword"
+  ],
+  "_source": {
+    "url": "/admin/login/?next=/admin/",
     "http_version": "1.1",
-    "user_agent": "curl/8.16.0",
-    "referer": "-",
-    "status": "404",
-    "message": "192.168.47.1 - - [01/Dec/2025:09:31:04 +0700] \"GET /login/ HTTP/1.1\" 404 1809 \"-\" \"curl/8.16.0\""
-  },
-  {
-    "@timestamp": "2025-12-01T02:31:05.000Z",
-    "ip": "192.168.47.1",
-    "bytes_sent": "3413",
-    "agent": {
-      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
-      "name": "django-server",
-      "type": "filebeat",
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "version": "8.19.7"
-    },
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "url": "/",
-    "@version": "1",
-    "log": {
-      "offset": 21267,
-      "file": {
-        "path": "/var/log/nginx/access.log"
-      }
-    },
     "log_type": "nginx",
-    "input": {
-      "type": "log"
-    },
-    "time_local": "01/Dec/2025:09:31:05 +0700",
-    "host": {
-      "name": "django-server"
-    },
-    "method": "GET",
-    "tags": [
-      "nginx",
-      "beats_input_codec_plain_applied"
-    ],
-    "http_version": "1.1",
-    "user_agent": "curl/8.16.0",
-    "referer": "-",
+    "method": "POST",
     "status": "200",
-    "message": "192.168.47.1 - - [01/Dec/2025:09:31:05 +0700] \"GET / HTTP/1.1\" 200 3413 \"-\" \"curl/8.16.0\""
-  },
-  {
-    "@timestamp": "2025-12-01T02:31:05.000Z",
-    "ip": "192.168.47.1",
-    "bytes_sent": "162",
+    "bytes_sent": "1368",
+    "input": {
+      "type": "log"
+    },
+    "@timestamp": "2025-12-02T04:14:50.000Z",
+    "ecs": {
+      "version": "8.0.0"
+    },
+    "@version": "1",
     "agent": {
       "version": "8.19.7",
       "name": "django-server",
-      "type": "filebeat",
-      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307"
-    },
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "url": "/static/",
-    "@version": "1",
-    "log": {
-      "offset": 21357,
-      "file": {
-        "path": "/var/log/nginx/access.log"
-      }
-    },
-    "log_type": "nginx",
-    "input": {
-      "type": "log"
-    },
-    "time_local": "01/Dec/2025:09:31:05 +0700",
-    "host": {
-      "name": "django-server"
-    },
-    "method": "GET",
-    "tags": [
-      "nginx",
-      "beats_input_codec_plain_applied"
-    ],
-    "http_version": "1.1",
-    "user_agent": "curl/8.16.0",
-    "referer": "-",
-    "status": "403",
-    "message": "192.168.47.1 - - [01/Dec/2025:09:31:05 +0700] \"GET /static/ HTTP/1.1\" 403 162 \"-\" \"curl/8.16.0\""
-  },
-  {
-    "@timestamp": "2025-12-01T02:31:06.000Z",
-    "ip": "192.168.47.1",
-    "bytes_sent": "1809",
-    "agent": {
-      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
-      "name": "django-server",
-      "type": "filebeat",
+      "ephemeral_id": "45e3a041-4cc0-4492-b9b1-3244a5c028b4",
       "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "version": "8.19.7"
+      "type": "filebeat"
     },
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "url": "/metrics",
-    "@version": "1",
     "log": {
-      "offset": 21453,
+      "offset": 1424323,
       "file": {
         "path": "/var/log/nginx/access.log"
       }
     },
-    "log_type": "nginx",
-    "input": {
-      "type": "log"
-    },
-    "time_local": "01/Dec/2025:09:31:06 +0700",
     "host": {
       "name": "django-server"
     },
-    "method": "GET",
-    "tags": [
-      "nginx",
-      "beats_input_codec_plain_applied"
-    ],
-    "http_version": "1.1",
-    "user_agent": "curl/8.16.0",
-    "referer": "-",
-    "status": "404",
-    "message": "192.168.47.1 - - [01/Dec/2025:09:31:06 +0700] \"GET /metrics HTTP/1.1\" 404 1809 \"-\" \"curl/8.16.0\""
-  },
-  {
-    "@timestamp": "2025-12-01T02:31:06.000Z",
+    "time_local": "02/Dec/2025:11:14:50 +0700",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+    "message": "192.168.47.1 - - [02/Dec/2025:11:14:50 +0700] \"POST /admin/login/?next=/admin/ HTTP/1.1\" 200 1368 \"http://192.168.47.129/admin/login/?next=/admin/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\"",
     "ip": "192.168.47.1",
-    "bytes_sent": "1809",
-    "agent": {
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "name": "django-server",
-      "type": "filebeat",
-      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
-      "version": "8.19.7"
-    },
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "url": "/login/",
-    "@version": "1",
-    "log": {
-      "offset": 21550,
-      "file": {
-        "path": "/var/log/nginx/access.log"
-      }
-    },
-    "log_type": "nginx",
-    "input": {
-      "type": "log"
-    },
-    "time_local": "01/Dec/2025:09:31:06 +0700",
-    "host": {
-      "name": "django-server"
-    },
-    "method": "GET",
     "tags": [
       "nginx",
       "beats_input_codec_plain_applied"
     ],
-    "http_version": "1.1",
-    "user_agent": "curl/8.16.0",
-    "referer": "-",
-    "status": "404",
-    "message": "192.168.47.1 - - [01/Dec/2025:09:31:06 +0700] \"GET /login/ HTTP/1.1\" 404 1809 \"-\" \"curl/8.16.0\""
+    "referer": "http://192.168.47.129/admin/login/?next=/admin/"
   },
-  {
-    "@timestamp": "2025-12-01T02:31:07.000Z",
-    "ip": "192.168.47.1",
-    "bytes_sent": "0",
-    "agent": {
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "name": "django-server",
-      "type": "filebeat",
-      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
-      "version": "8.19.7"
-    },
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "url": "/admin/",
-    "@version": "1",
-    "log": {
-      "offset": 21744,
-      "file": {
-        "path": "/var/log/nginx/access.log"
-      }
-    },
-    "log_type": "nginx",
-    "input": {
-      "type": "log"
-    },
-    "time_local": "01/Dec/2025:09:31:07 +0700",
-    "host": {
-      "name": "django-server"
-    },
-    "method": "GET",
+  "fields": {
+    "agent.version.keyword": [
+      "8.19.7"
+    ],
+    "referer": [
+      "http://192.168.47.129/admin/login/?next=/admin/"
+    ],
+    "input.type.keyword": [
+      "log"
+    ],
+    "host.name.keyword": [
+      "django-server"
+    ],
+    "status.keyword": [
+      "200"
+    ],
+    "tags.keyword": [
+      "nginx",
+      "beats_input_codec_plain_applied"
+    ],
+    "agent.type": [
+      "filebeat"
+    ],
+    "log_type": [
+      "nginx"
+    ],
+    "ecs.version.keyword": [
+      "8.0.0"
+    ],
+    "@version": [
+      "1"
+    ],
+    "ip.keyword": [
+      "192.168.47.1"
+    ],
+    "agent.name": [
+      "django-server"
+    ],
+    "method.keyword": [
+      "POST"
+    ],
+    "host.name": [
+      "django-server"
+    ],
+    "http_version.keyword": [
+      "1.1"
+    ],
+    "log.file.path.keyword": [
+      "/var/log/nginx/access.log"
+    ],
+    "referer.keyword": [
+      "http://192.168.47.129/admin/login/?next=/admin/"
+    ],
+    "user_agent": [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+    ],
+    "agent.type.keyword": [
+      "filebeat"
+    ],
+    "agent.ephemeral_id.keyword": [
+      "45e3a041-4cc0-4492-b9b1-3244a5c028b4"
+    ],
+    "method": [
+      "POST"
+    ],
+    "agent.name.keyword": [
+      "django-server"
+    ],
+    "ip": [
+      "192.168.47.1"
+    ],
+    "agent.id.keyword": [
+      "560cffde-240f-426a-b9c7-11fd1d976307"
+    ],
+    "http_version": [
+      "1.1"
+    ],
+    "time_local": [
+      "02/Dec/2025:11:14:50 +0700"
+    ],
+    "time_local.keyword": [
+      "02/Dec/2025:11:14:50 +0700"
+    ],
+    "@version.keyword": [
+      "1"
+    ],
+    "input.type": [
+      "log"
+    ],
+    "log.offset": [
+      1424323
+    ],
+    "message": [
+      "192.168.47.1 - - [02/Dec/2025:11:14:50 +0700] \"POST /admin/login/?next=/admin/ HTTP/1.1\" 200 1368 \"http://192.168.47.129/admin/login/?next=/admin/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""
+    ],
+    "user_agent.keyword": [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+    ],
+    "bytes_sent": [
+      "1368"
+    ],
+    "url": [
+      "/admin/login/?next=/admin/"
+    ],
+    "url.keyword": [
+      "/admin/login/?next=/admin/"
+    ],
     "tags": [
       "nginx",
       "beats_input_codec_plain_applied"
     ],
-    "http_version": "1.1",
-    "user_agent": "curl/8.16.0",
-    "referer": "-",
-    "status": "302",
-    "message": "192.168.47.1 - - [01/Dec/2025:09:31:07 +0700] \"GET /admin/ HTTP/1.1\" 302 0 \"-\" \"curl/8.16.0\""
+    "@timestamp": [
+      "2025-12-02T04:14:50.000Z"
+    ],
+    "agent.id": [
+      "560cffde-240f-426a-b9c7-11fd1d976307"
+    ],
+    "ecs.version": [
+      "8.0.0"
+    ],
+    "bytes_sent.keyword": [
+      "1368"
+    ],
+    "log.file.path": [
+      "/var/log/nginx/access.log"
+    ],
+    "agent.ephemeral_id": [
+      "45e3a041-4cc0-4492-b9b1-3244a5c028b4"
+    ],
+    "agent.version": [
+      "8.19.7"
+    ],
+    "log_type.keyword": [
+      "nginx"
+    ],
+    "status": [
+      "200"
+    ]
   },
-  {
-    "@timestamp": "2025-12-01T02:31:07.000Z",
-    "ip": "192.168.47.1",
-    "bytes_sent": "8423",
-    "agent": {
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "name": "django-server",
-      "type": "filebeat",
-      "ephemeral_id": "c772737a-3ed2-4c69-a83a-7a7969f98bd6",
-      "version": "8.19.7"
-    },
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "url": "/swagger/",
-    "@version": "1",
-    "log": {
-      "offset": 21646,
-      "file": {
-        "path": "/var/log/nginx/access.log"
-      }
-    },
-    "log_type": "nginx",
-    "input": {
-      "type": "log"
-    },
-    "time_local": "01/Dec/2025:09:31:07 +0700",
-    "host": {
-      "name": "django-server"
-    },
-    "method": "GET",
-    "tags": [
-      "nginx",
-      "beats_input_codec_plain_applied"
-    ],
-    "http_version": "1.1",
-    "user_agent": "curl/8.16.0",
-    "referer": "-",
-    "status": "200",
-    "message": "192.168.47.1 - - [01/Dec/2025:09:31:07 +0700] \"GET /swagger/ HTTP/1.1\" 200 8423 \"-\" \"curl/8.16.0\""
+  "ignored_field_values": {
+    "message.keyword": [
+      "192.168.47.1 - - [02/Dec/2025:11:14:50 +0700] \"POST /admin/login/?next=/admin/ HTTP/1.1\" 200 1368 \"http://192.168.47.129/admin/login/?next=/admin/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""
+    ]
   }
-]
+}

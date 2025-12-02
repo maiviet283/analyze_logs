@@ -1,7 +1,9 @@
+import os
 import time
+from dotenv import load_dotenv
 
 LAST_ALERT = {}
-ALERT_COOLDOWN = 60
+ALERT_COOLDOWN = int(os.getenv("ALERT_COOLDOWN", 60))
 
 def can_alert(ip: str) -> bool:
     now = time.time()

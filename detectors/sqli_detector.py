@@ -1,20 +1,28 @@
-import re
 from urllib.parse import unquote
 from alert.anti_spam import can_alert
 from alert.workers import alert_queue
+from enums.sqli_patern import SQLI_PATTERN
 
-SQLI_PATTERN = re.compile(
-    r"(?i)(union.+select|or\s+1=1|sleep\(|updatexml|extractvalue|drop\s+table)"
-)
 
 async def realtime_sqli_detector(streamer):
     async for log in streamer.stream_logs():
         body = unquote(str(log.get("body", "")))
         ip = log.get("ip", "unknown")
+        time = log.get("timestamp", "unknown")
+        user_agent = log.get("user_agent", "unknown")
+        full_path = log.get("full_path", "unknown")
+        method = log.get("method","unknown")
 
         if SQLI_PATTERN.search(body):
             if not can_alert(ip):
-                continue  # NGĂN SPAM ALERT
+                continue
 
-            msg = f"[SQLi ALERT]\n - IP: {ip}\n - Payload: {body[:250]}"
+            msg = (
+                f"[ALERT SQLi DETECTED] Lúc {time} \n"
+                f" - IP: {ip} \n"
+                f" - User-Agent: {user_agent} \n"
+                f" - Method: {method} \n"
+                f" - Path: {full_path} \n"
+                f" - Payload: {body}"
+            )
             await alert_queue.put({"content": msg, "threat_type": "sqli"})

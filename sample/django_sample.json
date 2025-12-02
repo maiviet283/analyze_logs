@@ -1,6 +1,11 @@
-[
-  {
-    "path": "/api/customers/login/",
+{
+  "_index": "django-logs-2025.12.02",
+  "_type": "_doc",
+  "_id": "iQxF3ZoBorga73KIPx8x",
+  "_version": 1,
+  "_score": 1,
+  "_source": {
+    "path": "/admin/login/",
     "input": {
       "type": "log"
     },
@@ -8,28 +13,28 @@
       "name": "django-server"
     },
     "@version": "1",
-    "content_length": 64,
+    "status_code": 200,
     "log": {
-      "offset": 9468818,
+      "offset": 6979987,
       "file": {
-        "path": "/home/maiviet283/my_shop/logs/django-logs-2025-12-01.log"
+        "path": "/home/maiviet283/my_shop/logs/django-logs-2025-12-02.log"
       }
     },
-    "status_code": 400,
+    "content_length": 3396,
     "message": "http_request",
-    "body": "password=password123%27--&username=jessica81",
-    "ip": "192.168.47.1",
+    "body": "csrfmiddlewaretoken=txEqxtoyqCA4yrc5Q72Rlz6zdFMF8EFmOFNoOO04tr07nFLQMutlAr5Mi9X4JCC4&username=password123%27--&password=user2",
     "logger": "unified",
     "level": "INFO",
-    "full_path": "/api/customers/login/",
-    "query_params": "",
-    "timestamp": "2025-12-01 11:09:37",
-    "duration_ms": 204.5,
+    "ip": "192.168.47.1",
+    "full_path": "/admin/login/?next=/admin/",
+    "query_params": "next=/admin/",
+    "timestamp": "2025-12-02 11:14:50",
+    "duration_ms": 337.68,
     "log_type": "django",
-    "user_agent": "PostmanRuntime/7.49.1",
     "method": "POST",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
     "type": "normal",
-    "@timestamp": "2025-12-01T04:09:42.785Z",
+    "@timestamp": "2025-12-02T04:14:53.160Z",
     "ecs": {
       "version": "8.0.0"
     },
@@ -50,208 +55,178 @@
     ],
     "event": "http_request"
   },
-  {
-    "path": "/api/customers/login/",
-    "input": {
-      "type": "log"
-    },
-    "host": {
-      "name": "django-server"
-    },
-    "@version": "1",
-    "content_length": 64,
-    "log": {
-      "offset": 9469321,
-      "file": {
-        "path": "/home/maiviet283/my_shop/logs/django-logs-2025-12-01.log"
-      }
-    },
-    "status_code": 400,
-    "message": "http_request",
-    "logger": "unified",
-    "ip": "192.168.47.1",
-    "level": "INFO",
-    "body": "password=password123%27--&username=jessica81",
-    "full_path": "/api/customers/login/",
-    "query_params": "",
-    "timestamp": "2025-12-01 11:09:38",
-    "duration_ms": 208.4,
-    "log_type": "django",
-    "user_agent": "PostmanRuntime/7.49.1",
-    "method": "POST",
-    "type": "normal",
-    "@timestamp": "2025-12-01T04:09:42.786Z",
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "agent": {
-      "version": "8.19.7",
-      "name": "django-server",
-      "ephemeral_id": "45e3a041-4cc0-4492-b9b1-3244a5c028b4",
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "type": "filebeat"
-    },
-    "user": {
-      "authenticated": false
-    },
+  "fields": {
+    "agent.version.keyword": [
+      "8.19.7"
+    ],
+    "body.keyword": [
+      "csrfmiddlewaretoken=txEqxtoyqCA4yrc5Q72Rlz6zdFMF8EFmOFNoOO04tr07nFLQMutlAr5Mi9X4JCC4&username=password123%27--&password=user2"
+    ],
+    "host.name.keyword": [
+      "django-server"
+    ],
+    "logger": [
+      "unified"
+    ],
+    "user.authenticated": [
+      false
+    ],
+    "body": [
+      "csrfmiddlewaretoken=txEqxtoyqCA4yrc5Q72Rlz6zdFMF8EFmOFNoOO04tr07nFLQMutlAr5Mi9X4JCC4&username=password123%27--&password=user2"
+    ],
+    "type": [
+      "normal"
+    ],
+    "path": [
+      "/admin/login/"
+    ],
+    "ecs.version.keyword": [
+      "8.0.0"
+    ],
+    "type.keyword": [
+      "normal"
+    ],
+    "agent.name": [
+      "django-server"
+    ],
+    "host.name": [
+      "django-server"
+    ],
+    "content_length": [
+      3396
+    ],
+    "method": [
+      "POST"
+    ],
+    "level": [
+      "INFO"
+    ],
+    "ip": [
+      "192.168.47.1"
+    ],
+    "agent.id.keyword": [
+      "560cffde-240f-426a-b9c7-11fd1d976307"
+    ],
+    "full_path.keyword": [
+      "/admin/login/?next=/admin/"
+    ],
+    "@version.keyword": [
+      "1"
+    ],
+    "input.type": [
+      "log"
+    ],
+    "log.offset": [
+      6979987
+    ],
     "tags": [
       "django",
       "beats_input_codec_plain_applied",
       "django"
     ],
-    "event": "http_request"
-  },
-  {
-    "path": "/api/customers/login/",
-    "input": {
-      "type": "log"
-    },
-    "host": {
-      "name": "django-server"
-    },
-    "@version": "1",
-    "status_code": 400,
-    "log": {
-      "file": {
-        "path": "/home/maiviet283/my_shop/logs/django-logs-2025-12-01.log"
-      },
-      "offset": 9469824
-    },
-    "content_length": 64,
-    "message": "http_request",
-    "logger": "unified",
-    "body": "password=password123%27--&username=jessica81",
-    "level": "INFO",
-    "ip": "192.168.47.1",
-    "full_path": "/api/customers/login/",
-    "query_params": "",
-    "duration_ms": 199.68,
-    "timestamp": "2025-12-01 11:09:39",
-    "log_type": "django",
-    "user_agent": "PostmanRuntime/7.49.1",
-    "method": "POST",
-    "type": "normal",
-    "@timestamp": "2025-12-01T04:09:42.787Z",
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "agent": {
-      "version": "8.19.7",
-      "ephemeral_id": "45e3a041-4cc0-4492-b9b1-3244a5c028b4",
-      "name": "django-server",
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "type": "filebeat"
-    },
-    "user": {
-      "authenticated": false
-    },
-    "tags": [
+    "duration_ms": [
+      337.68
+    ],
+    "agent.id": [
+      "560cffde-240f-426a-b9c7-11fd1d976307"
+    ],
+    "ecs.version": [
+      "8.0.0"
+    ],
+    "query_params": [
+      "next=/admin/"
+    ],
+    "logger.keyword": [
+      "unified"
+    ],
+    "message.keyword": [
+      "http_request"
+    ],
+    "agent.version": [
+      "8.19.7"
+    ],
+    "input.type.keyword": [
+      "log"
+    ],
+    "status_code": [
+      200
+    ],
+    "tags.keyword": [
       "django",
       "beats_input_codec_plain_applied",
       "django"
     ],
-    "event": "http_request"
-  },
-  {
-    "path": "/api/customers/login/",
-    "input": {
-      "type": "log"
-    },
-    "host": {
-      "name": "django-server"
-    },
-    "@version": "1",
-    "content_length": 64,
-    "log": {
-      "offset": 9470328,
-      "file": {
-        "path": "/home/maiviet283/my_shop/logs/django-logs-2025-12-01.log"
-      }
-    },
-    "status_code": 400,
-    "message": "http_request",
-    "body": "password=password123%27--&username=jessica81",
-    "ip": "192.168.47.1",
-    "logger": "unified",
-    "level": "INFO",
-    "full_path": "/api/customers/login/",
-    "query_params": "",
-    "timestamp": "2025-12-01 11:10:33",
-    "duration_ms": 205.16,
-    "log_type": "django",
-    "user_agent": "PostmanRuntime/7.49.1",
-    "method": "POST",
-    "type": "normal",
-    "@timestamp": "2025-12-01T04:10:37.795Z",
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "agent": {
-      "version": "8.19.7",
-      "name": "django-server",
-      "ephemeral_id": "45e3a041-4cc0-4492-b9b1-3244a5c028b4",
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "type": "filebeat"
-    },
-    "user": {
-      "authenticated": false
-    },
-    "tags": [
-      "django",
-      "beats_input_codec_plain_applied",
+    "timestamp.keyword": [
+      "2025-12-02 11:14:50"
+    ],
+    "agent.type": [
+      "filebeat"
+    ],
+    "log_type": [
       "django"
     ],
-    "event": "http_request"
-  },
-  {
-    "path": "/api/customers/login/",
-    "input": {
-      "type": "log"
-    },
-    "host": {
-      "name": "django-server"
-    },
-    "@version": "1",
-    "status_code": 400,
-    "log": {
-      "offset": 9470832,
-      "file": {
-        "path": "/home/maiviet283/my_shop/logs/django-logs-2025-12-01.log"
-      }
-    },
-    "content_length": 64,
-    "message": "http_request",
-    "body": "password=password123%27--&username=jessica81",
-    "ip": "192.168.47.1",
-    "level": "INFO",
-    "logger": "unified",
-    "full_path": "/api/customers/login/",
-    "query_params": "",
-    "duration_ms": 207.24,
-    "timestamp": "2025-12-01 11:10:34",
-    "log_type": "django",
-    "method": "POST",
-    "user_agent": "PostmanRuntime/7.49.1",
-    "type": "normal",
-    "@timestamp": "2025-12-01T04:10:37.795Z",
-    "ecs": {
-      "version": "8.0.0"
-    },
-    "agent": {
-      "version": "8.19.7",
-      "ephemeral_id": "45e3a041-4cc0-4492-b9b1-3244a5c028b4",
-      "name": "django-server",
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "type": "filebeat"
-    },
-    "user": {
-      "authenticated": false
-    },
-    "tags": [
-      "django",
-      "beats_input_codec_plain_applied",
+    "@version": [
+      "1"
+    ],
+    "ip.keyword": [
+      "192.168.47.1"
+    ],
+    "method.keyword": [
+      "POST"
+    ],
+    "event": [
+      "http_request"
+    ],
+    "full_path": [
+      "/admin/login/?next=/admin/"
+    ],
+    "log.file.path.keyword": [
+      "/home/maiviet283/my_shop/logs/django-logs-2025-12-02.log"
+    ],
+    "user_agent": [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+    ],
+    "agent.type.keyword": [
+      "filebeat"
+    ],
+    "event.keyword": [
+      "http_request"
+    ],
+    "timestamp": [
+      "2025-12-02 11:14:50"
+    ],
+    "agent.ephemeral_id.keyword": [
+      "45e3a041-4cc0-4492-b9b1-3244a5c028b4"
+    ],
+    "agent.name.keyword": [
+      "django-server"
+    ],
+    "query_params.keyword": [
+      "next=/admin/"
+    ],
+    "message": [
+      "http_request"
+    ],
+    "user_agent.keyword": [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+    ],
+    "@timestamp": [
+      "2025-12-02T04:14:53.160Z"
+    ],
+    "level.keyword": [
+      "INFO"
+    ],
+    "log.file.path": [
+      "/home/maiviet283/my_shop/logs/django-logs-2025-12-02.log"
+    ],
+    "agent.ephemeral_id": [
+      "45e3a041-4cc0-4492-b9b1-3244a5c028b4"
+    ],
+    "log_type.keyword": [
       "django"
     ],
-    "event": "http_request"
+    "path.keyword": [
+      "/admin/login/"
+    ]
   }
-]
+}

@@ -1,13 +1,17 @@
+import os
+from dotenv import load_dotenv
 import asyncio
 from collections import defaultdict
 from alert.anti_spam import can_alert
 from alert.workers import alert_queue
 
+load_dotenv()
+
 FAILED = defaultdict(int)
 LAST = defaultdict(float)
 
-THRESHOLD = 10     # ví dụ brute-force 10 lần
-EXPIRE = 60        # reset sau 60s
+THRESHOLD = os.getenv("NGINX_BRUTE_THRESHOLD", 100)
+EXPIRE = 60
 
 async def realtime_bruteforce_detector(streamer):
     async for log in streamer.stream_logs():

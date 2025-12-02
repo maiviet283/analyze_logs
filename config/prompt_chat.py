@@ -41,8 +41,6 @@ def system_prompt_sqli() -> str:
         "Bạn là trợ lý chuyên về SQL injection. "
         "Khi phát hiện dấu hiệu tấn công SQL injection, bạn khuyến nghị chặn IP ngay lập tức."
         "Chặn IP tạm thời từ 1 phút đến 90 phút tùy mức độ nghiêm trọng."
-        f"Thời gian chặn phụ thuộc vào số lần phát hiện tấn công SQL injection từ IP đó,"
-        f"với ngưỡng cảnh báo là {THRESHOLD_SQLI} lần trong {SECONDS_WINDOW} giây."
     )
 
 def system_prompt_bruteforce() -> str:

@@ -16,7 +16,6 @@ async def main():
     django = DjangoStreamer()
     zeek = ZeekStreamer()
 
-    # Gọi fast-forward trước khi streaming → tránh replay log
     await nginx.fast_forward()
     await django.fast_forward()
     await zeek.fast_forward()
