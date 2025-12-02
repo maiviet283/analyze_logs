@@ -3,11 +3,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECONDS_WINDOW=os.getenv("SECONDS_WINDOW", 10)
+SECONDS_WINDOW = int(os.getenv("SECONDS_WINDOW", 10))
 
-THRESHOLD_REQUESTS=os.getenv("THRESHOLD_REQUESTS", 500)
-NGINX_BRUTE_THRESHOLD = os.getenv("NGINX_BRUTE_THRESHOLD", 100)
-THRESHOLD_SQLI = os.getenv("THRESHOLD_SQLI", 5)
+THRESHOLD_REQUESTS = int(os.getenv("THRESHOLD_REQUESTS", 500))
+NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 100))
+THRESHOLD_SQLI = int(os.getenv("THRESHOLD_SQLI", 5))
+NGINX_BRUTE_EXPIRE = int(os.getenv("NGINX_BRUTE_EXPIRE", 30))
 
 
 template = (
@@ -51,5 +52,5 @@ def system_prompt_bruteforce() -> str:
         "Cho nên khi request càng nhiều thì bạn càng cần khuyến nghị các biện pháp mạnh mẽ hơn."
         f"Chặn IP tạm thời từ 1 phút đến 24 giờ tùy mức độ nghiêm trọng. theo khoảng {NGINX_BRUTE_THRESHOLD} - {NGINX_BRUTE_THRESHOLD * 100} requests: chặn 5 phút-20 giờ, "
         "Thời gian chặn càng lâu nếu số requests càng cao, nếu số requests chỉ hơi vượt ngưỡng thì chặn ngắn thôi."
-        f"Bạn sẽ tự tính thời gian chặn dựa trên số requests so với mốc cảnh báo. ({NGINX_BRUTE_THRESHOLD} requests trong {SECONDS_WINDOW} giây)."
+        f"Bạn sẽ tự tính thời gian chặn dựa trên số requests so với mốc cảnh báo. ({NGINX_BRUTE_THRESHOLD} requests trong {NGINX_BRUTE_EXPIRE} giây)."
     )

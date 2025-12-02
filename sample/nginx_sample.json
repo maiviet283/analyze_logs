@@ -1,59 +1,56 @@
 {
   "_index": "nginx-logs-2025.12.02",
   "_type": "_doc",
-  "_id": "jQxF3ZoBorga73KIUh-K",
+  "_id": "wAyr3ZoBorga73KI4jLH",
   "_version": 1,
   "_score": 1,
-  "_ignored": [
-    "message.keyword"
-  ],
   "_source": {
-    "url": "/admin/login/?next=/admin/",
+    "url": "/api/customers/login/",
     "http_version": "1.1",
     "log_type": "nginx",
     "method": "POST",
-    "status": "200",
-    "bytes_sent": "1368",
+    "status": "401",
+    "bytes_sent": "64",
     "input": {
       "type": "log"
     },
-    "@timestamp": "2025-12-02T04:14:50.000Z",
+    "@timestamp": "2025-12-02T06:07:00.000Z",
     "ecs": {
       "version": "8.0.0"
     },
     "@version": "1",
-    "agent": {
-      "version": "8.19.7",
-      "name": "django-server",
-      "ephemeral_id": "45e3a041-4cc0-4492-b9b1-3244a5c028b4",
-      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
-      "type": "filebeat"
+    "host": {
+      "name": "django-server"
     },
     "log": {
-      "offset": 1424323,
+      "offset": 1461137,
       "file": {
         "path": "/var/log/nginx/access.log"
       }
     },
-    "host": {
-      "name": "django-server"
+    "agent": {
+      "version": "8.19.7",
+      "ephemeral_id": "45e3a041-4cc0-4492-b9b1-3244a5c028b4",
+      "name": "django-server",
+      "id": "560cffde-240f-426a-b9c7-11fd1d976307",
+      "type": "filebeat"
     },
-    "time_local": "02/Dec/2025:11:14:50 +0700",
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
-    "message": "192.168.47.1 - - [02/Dec/2025:11:14:50 +0700] \"POST /admin/login/?next=/admin/ HTTP/1.1\" 200 1368 \"http://192.168.47.129/admin/login/?next=/admin/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\"",
+    "time_local": "02/Dec/2025:13:07:00 +0700",
+    "user_agent": "BruteforceTester/Soft",
+    "message": "192.168.47.1 - - [02/Dec/2025:13:07:00 +0700] \"POST /api/customers/login/ HTTP/1.1\" 401 64 \"-\" \"BruteforceTester/Soft\"",
     "ip": "192.168.47.1",
     "tags": [
       "nginx",
       "beats_input_codec_plain_applied"
     ],
-    "referer": "http://192.168.47.129/admin/login/?next=/admin/"
+    "referer": "-"
   },
   "fields": {
     "agent.version.keyword": [
       "8.19.7"
     ],
     "referer": [
-      "http://192.168.47.129/admin/login/?next=/admin/"
+      "-"
     ],
     "input.type.keyword": [
       "log"
@@ -62,7 +59,7 @@
       "django-server"
     ],
     "status.keyword": [
-      "200"
+      "401"
     ],
     "tags.keyword": [
       "nginx",
@@ -99,10 +96,10 @@
       "/var/log/nginx/access.log"
     ],
     "referer.keyword": [
-      "http://192.168.47.129/admin/login/?next=/admin/"
+      "-"
     ],
     "user_agent": [
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+      "BruteforceTester/Soft"
     ],
     "agent.type.keyword": [
       "filebeat"
@@ -126,10 +123,10 @@
       "1.1"
     ],
     "time_local": [
-      "02/Dec/2025:11:14:50 +0700"
+      "02/Dec/2025:13:07:00 +0700"
     ],
     "time_local.keyword": [
-      "02/Dec/2025:11:14:50 +0700"
+      "02/Dec/2025:13:07:00 +0700"
     ],
     "@version.keyword": [
       "1"
@@ -138,29 +135,29 @@
       "log"
     ],
     "log.offset": [
-      1424323
+      1461137
     ],
     "message": [
-      "192.168.47.1 - - [02/Dec/2025:11:14:50 +0700] \"POST /admin/login/?next=/admin/ HTTP/1.1\" 200 1368 \"http://192.168.47.129/admin/login/?next=/admin/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""
+      "192.168.47.1 - - [02/Dec/2025:13:07:00 +0700] \"POST /api/customers/login/ HTTP/1.1\" 401 64 \"-\" \"BruteforceTester/Soft\""
     ],
     "user_agent.keyword": [
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+      "BruteforceTester/Soft"
     ],
     "bytes_sent": [
-      "1368"
+      "64"
     ],
     "url": [
-      "/admin/login/?next=/admin/"
+      "/api/customers/login/"
     ],
     "url.keyword": [
-      "/admin/login/?next=/admin/"
+      "/api/customers/login/"
     ],
     "tags": [
       "nginx",
       "beats_input_codec_plain_applied"
     ],
     "@timestamp": [
-      "2025-12-02T04:14:50.000Z"
+      "2025-12-02T06:07:00.000Z"
     ],
     "agent.id": [
       "560cffde-240f-426a-b9c7-11fd1d976307"
@@ -169,10 +166,13 @@
       "8.0.0"
     ],
     "bytes_sent.keyword": [
-      "1368"
+      "64"
     ],
     "log.file.path": [
       "/var/log/nginx/access.log"
+    ],
+    "message.keyword": [
+      "192.168.47.1 - - [02/Dec/2025:13:07:00 +0700] \"POST /api/customers/login/ HTTP/1.1\" 401 64 \"-\" \"BruteforceTester/Soft\""
     ],
     "agent.ephemeral_id": [
       "45e3a041-4cc0-4492-b9b1-3244a5c028b4"
@@ -184,12 +184,7 @@
       "nginx"
     ],
     "status": [
-      "200"
-    ]
-  },
-  "ignored_field_values": {
-    "message.keyword": [
-      "192.168.47.1 - - [02/Dec/2025:11:14:50 +0700] \"POST /admin/login/?next=/admin/ HTTP/1.1\" 200 1368 \"http://192.168.47.129/admin/login/?next=/admin/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\""
+      "401"
     ]
   }
 }

