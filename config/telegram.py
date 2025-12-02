@@ -1,6 +1,8 @@
 import os
 import httpx
+import asyncio
 from dotenv import load_dotenv
+from alert.status_elastic import get_elasticsearch_status
 
 load_dotenv()
 
@@ -24,3 +26,85 @@ async def send_telegram_message(client: httpx.AsyncClient, text: str):
 
     except Exception as e:
         print("[ERROR] Lỗi Telegram:", e)
+        
+
+async def send_photo(client, chat_id, photo_path: str):
+    try:
+        with open(photo_path, "rb") as f:
+            await client.post(
+                f"{BASE_URL}/sendPhoto",
+                files={"photo": f},
+                data={"chat_id": chat_id}
+            )
+    except Exception as e:
+        print("Lỗi gửi ảnh:", e)
+
+
+async def send_to(client, chat_id, text: str):
+    try:
+        await client.post(
+            f"{BASE_URL}/sendMessage",
+            data={"chat_id": chat_id, "text": text},
+            timeout=10
+        )
+    except Exception as e:
+        print("Lỗi gửi tin:", e)
+
+
+
+async def listen_telegram():
+    print("Bot đang lắng nghe tin nhắn Telegram...")
+
+    offset = None
+
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        while True:
+            try:
+                r = await client.get(
+                    f"{BASE_URL}/getUpdates",
+                    params={"offset": offset, "timeout": 15}
+                )
+
+                data = r.json()
+
+                if not data.get("ok"):
+                    print("Telegram error:", data)
+                    await asyncio.sleep(1)
+                    continue
+
+                updates = data.get("result", [])
+
+                for update in updates:
+                    offset = update["update_id"] + 1
+
+                    message = update.get("message")
+                    if not message:
+                        continue
+
+                    chat = message["chat"]
+                    chat_id = chat["id"]
+                    text = message.get("text", "")
+
+                    if text == "/chart":
+                        from chart.export_chart import handle_chart
+                        await handle_chart(client, chat_id)
+
+                    elif text == "/help":
+                        await send_to(client, chat_id,(
+                            "Các lệnh khả dụng: \n"
+                            "/status : Kiểm tra trạng thái hệ thống \n"
+                            "/chart : Xuất biểu đồ logs của toàn hệ thống và tính toán tỷ lệ"
+                        ))
+                        
+                    elif text == "/status":
+                        status_text = await get_elasticsearch_status()
+                        await send_to(client, chat_id, status_text)
+                        
+                    else: 
+                        await send_to(client, chat_id,(
+                            "Nội Dung Không Hợp Lệ, vui lòng gõ /help để xem thêm thông tin"
+                        ))
+
+            except Exception as e:
+                print("Lỗi polling:", e)
+                await asyncio.sleep(3)

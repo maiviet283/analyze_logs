@@ -10,6 +10,7 @@ from detectors.ddos_detector import realtime_ddos_detector
 
 from alert.workers import alert_worker
 from config.elastic import es_async_client
+from config.telegram import listen_telegram
 
 async def main():
     nginx = NginxStreamer()
@@ -26,6 +27,8 @@ async def main():
         asyncio.create_task(realtime_sqli_detector(django)),
         asyncio.create_task(realtime_bruteforce_detector(nginx)),
         asyncio.create_task(realtime_ddos_detector(zeek)),
+        
+        asyncio.create_task(listen_telegram()),
     ]
 
 
