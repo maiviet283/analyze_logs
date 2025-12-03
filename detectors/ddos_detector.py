@@ -14,6 +14,7 @@ LAST = defaultdict(float)
 
 THRESHOLD = int(os.getenv("THRESHOLD_REQUESTS", 500))
 EXPIRE = int(os.getenv("SECONDS_WINDOW", 10))
+MAX_DDOS_IPS = int(os.getenv("MAX_DDOS_IPS", 50000))
 
 
 def convert_to_vietnam_time(ts: str):
@@ -44,7 +45,7 @@ async def realtime_ddos_detector(streamer):
 
             now = loop.time()
 
-            # Nếu đã quá EXPIRE giây thì reset counter
+            # Nếu đã quá EXPIRE giây thì reset counter của IP
             if now - LAST[ip] > EXPIRE:
                 COUNTS[ip] = 0
 
@@ -52,14 +53,13 @@ async def realtime_ddos_detector(streamer):
             LAST[ip] = now
 
             # Nếu vượt ngưỡng → gửi cảnh báo
-            if COUNTS[ip] >= THRESHOLD:
-                if can_alert(ip):
-                    msg = (
-                        f"[ALERT DDoS Scanner] Ngày {vn_time}\n"
-                        f" - IP: {ip} \n"
-                        f" - Ngưỡng {THRESHOLD} requests trong {EXPIRE} giây đã bị vượt qua."
-                    )
-                    await alert_queue.put({"content": msg, "threat_type": "ddos"})
+            if COUNTS[ip] >= THRESHOLD and can_alert(ip):
+                msg = (
+                    f"[ALERT DDoS Scanner] Ngày {vn_time}\n"
+                    f" - IP: {ip} \n"
+                    f" - Ngưỡng {THRESHOLD} requests trong {EXPIRE} giây đã bị vượt qua."
+                )
+                await alert_queue.put({"content": msg, "threat_type": "ddos"})
 
         # Cleanup để không leak RAM
         now = loop.time()
@@ -67,5 +67,10 @@ async def realtime_ddos_detector(streamer):
         for ip in expired:
             LAST.pop(ip, None)
             COUNTS.pop(ip, None)
+
+        # Nếu số IP đang theo dõi quá lớn (DDoS IP random), reset cứng
+        if len(LAST) > MAX_DDOS_IPS:
+            LAST.clear()
+            COUNTS.clear()
 
         await asyncio.sleep(0.05)

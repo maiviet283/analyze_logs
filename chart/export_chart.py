@@ -51,7 +51,8 @@ def create_pie_chart(counts, percentages):
 
     chart_path = os.path.join(IMAGE_DIR, "chart.png")
     plt.savefig(chart_path, dpi=140, bbox_inches="tight")
-    plt.close()
+    plt.clf()
+    plt.close('all')
 
     return chart_path
 

@@ -1,6 +1,7 @@
 import asyncio
 from config.elastic import es_async_client
 
+
 class BaseStreamer:
     def __init__(self, index_pattern: str):
         self.es = es_async_client
@@ -23,10 +24,12 @@ class BaseStreamer:
                         {"log.offset": "desc"}
                     ],
                     "query": {"match_all": {}}
-                }
+                },
+                # Chỉ lấy phần cần thiết để tránh tạo object dư
+                filter_path=["hits.hits._source", "hits.hits.sort"],
             )
 
-            hits = res["hits"]["hits"]
+            hits = res.get("hits", {}).get("hits", [])
             if hits:
                 self.search_after = hits[0]["sort"]
                 print(f"[FAST-FORWARD] {self.index_pattern} bắt đầu từ log mới nhất")
@@ -60,16 +63,22 @@ class BaseStreamer:
             res = await self.es.search(
                 index=self.index_pattern,
                 body=query,
-                request_timeout=20
+                request_timeout=20,
+                # chỉ lấy _source + sort để giảm kích thước response
+                filter_path=["hits.hits._source", "hits.hits.sort"],
             )
 
-            hits = res["hits"]["hits"]
+            hits = res.get("hits", {}).get("hits", [])
 
             if hits:
                 for h in hits:
-                    yield h["_source"]
+                    src = h.get("_source")
+                    if src is not None:
+                        yield src
 
                 self.search_after = hits[-1]["sort"]
 
+                # Nhả CPU một chút, tránh loop quá sát khi log về liên tục
+                await asyncio.sleep(0.01)
             else:
                 await asyncio.sleep(0.2)
