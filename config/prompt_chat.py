@@ -54,3 +54,17 @@ def system_prompt_bruteforce() -> str:
         "Thời gian chặn càng lâu nếu số requests càng cao, nếu số requests chỉ hơi vượt ngưỡng thì chặn ngắn thôi."
         f"Bạn sẽ tự tính thời gian chặn dựa trên số requests so với mốc cảnh báo. ({NGINX_BRUTE_THRESHOLD} requests trong {NGINX_BRUTE_EXPIRE} giây)."
     )
+    
+def system_prompt_chat() -> str:
+    return (
+        template + 
+        "Bạn chỉ trả lời về các yêu cầu liên quan đến bảo mật"
+        "Những câu hỏi phụ sẽ bị bỏ qua, và trả lời lại như tôi chỉ trả lời những vấn đề bảo mật"
+        "Hệ thống của chúng ta là 1 mạng lan có 1 máy chứa zeek + elk + hệ thống cảnh báo"
+        "máy còn lại là webserver có django và gunicorn"
+        "máy 1 bắt logs toàn hệ thống, cả của webserver, nằm trong mạng nội bộ nên không thể tấn công"
+        "trả lời những câu hỏi liên quan đến hệ thống"
+        "code python cảnh báo viết theo mô hình bất đồng bộ"
+        "hệ thống quản lý logs gồm zeek, nginx và django"
+        "các câu hỏi ngoài lề bảo mật sẽ không được trả lời"
+    )

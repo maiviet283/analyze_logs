@@ -9,17 +9,13 @@ os.makedirs(IMAGE_DIR, exist_ok=True)
 
 
 def create_pie_chart(counts, percentages):
-    import matplotlib.pyplot as plt
-    import os
-
     labels = ["django", "nginx", "zeek"]
     values = [counts[k] for k in labels]
 
-    # Màu sắc hiện đại (Tailwind palette)
     colors = [
-        "#3B82F6",  # blue
-        "#EC4848",  # pink
-        "#1EA751",  # green
+        "#3B82F6",
+        "#EC4848",
+        "#1EA751",
     ]
 
     plt.figure(figsize=(5.2, 5.2))
@@ -39,7 +35,7 @@ def create_pie_chart(counts, percentages):
         colors=colors,
         labels=None,
         autopct=lambda pct: label_function(pct, values),
-        pctdistance=0.75,                 # vị trí hiển thị %
+        pctdistance=0.75, # vị trí hiển thị %
         startangle=90,
         wedgeprops={"linewidth": 1, "edgecolor": "white"},
         textprops={"fontsize": 11},

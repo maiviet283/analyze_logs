@@ -2,6 +2,7 @@ import os
 import httpx
 import asyncio
 from dotenv import load_dotenv
+from .chat_box import generate_ai_recommendation
 from alert.status_elastic import get_elasticsearch_status
 
 load_dotenv()
@@ -93,13 +94,22 @@ async def listen_telegram():
                         await send_to(client, chat_id,(
                             "Các lệnh khả dụng: \n"
                             "/status : Kiểm tra trạng thái hệ thống \n"
-                            "/chart : Xuất biểu đồ logs của toàn hệ thống và tính toán tỷ lệ"
+                            "/chart : Xuất biểu đồ logs của toàn hệ thống và tính toán tỷ lệ \n"
+                            "/chat message : AI sẽ trả lời tất cả những thông tin liên quan đến bảo mật" 
                         ))
                         
                     elif text == "/status":
                         status_text = await get_elasticsearch_status()
                         await send_to(client, chat_id, status_text)
                         
+                    elif text.startswith("/chat"):
+                        _, _, payload = text.partition(" ")
+                        if payload.strip():
+                            ai_recommendation = await generate_ai_recommendation(payload, "chat")
+                            await send_to(client, chat_id, ai_recommendation)
+                        else:
+                            await send_to(client, chat_id, "Vui lòng nhập nội dung sau /chat. Ví dụ: /chat hello")
+
                     else: 
                         await send_to(client, chat_id,(
                             "Nội Dung Không Hợp Lệ, vui lòng gõ /help để xem thêm thông tin"
