@@ -7,6 +7,7 @@ from service.zeek_logs import ZeekStreamer
 from detectors.sqli_detector import realtime_sqli_detector
 from detectors.brute_detector import realtime_bruteforce_detector
 from detectors.ddos_detector import realtime_ddos_detector
+from detectors.directory_bruteforce_detector import realtime_directory_bruteforce
 
 from alert.workers import alert_worker
 from config.elastic import es_async_client
@@ -26,6 +27,7 @@ async def main():
 
         asyncio.create_task(realtime_sqli_detector(django)),
         asyncio.create_task(realtime_bruteforce_detector(nginx)),
+        asyncio.create_task(realtime_directory_bruteforce(nginx)),
         asyncio.create_task(realtime_ddos_detector(zeek)),
         
         asyncio.create_task(listen_telegram()),

@@ -12,7 +12,7 @@ load_dotenv()
 COUNTS = defaultdict(int)
 LAST = defaultdict(float)
 
-THRESHOLD = int(os.getenv("THRESHOLD_REQUESTS", 500))
+THRESHOLD = int(os.getenv("THRESHOLD_REQUESTS", 1500))
 EXPIRE = int(os.getenv("SECONDS_WINDOW", 10))
 MAX_DDOS_IPS = int(os.getenv("MAX_DDOS_IPS", 50000))
 
@@ -55,11 +55,12 @@ async def realtime_ddos_detector(streamer):
             # Nếu vượt ngưỡng → gửi cảnh báo
             if COUNTS[ip] >= THRESHOLD and can_alert(ip):
                 msg = (
-                    f"[ALERT DDoS Scanner] Ngày {vn_time}\n"
+                    f"[DDoS Scanner ALERT] Ngày {vn_time}\n"
                     f" - IP: {ip} \n"
                     f" - Ngưỡng {THRESHOLD} requests trong {EXPIRE} giây đã bị vượt qua."
                 )
                 await alert_queue.put({"content": msg, "threat_type": "ddos"})
+                print(f"[DDoS Scanner ALERT] IP: {ip} - (Ngày {vn_time})")
 
         # Cleanup để không leak RAM
         now = loop.time()

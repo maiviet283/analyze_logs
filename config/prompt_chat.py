@@ -5,10 +5,13 @@ load_dotenv()
 
 SECONDS_WINDOW = int(os.getenv("SECONDS_WINDOW", 10))
 
-THRESHOLD_REQUESTS = int(os.getenv("THRESHOLD_REQUESTS", 500))
-NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 100))
+THRESHOLD_REQUESTS = int(os.getenv("THRESHOLD_REQUESTS", 1500))
 THRESHOLD_SQLI = int(os.getenv("THRESHOLD_SQLI", 5))
+THRESHOLD_DIRBRUTE = int(os.getenv("NGINX_DIRBRUTE_THRESHOLD", 40))
+
+NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 100))
 NGINX_BRUTE_EXPIRE = int(os.getenv("NGINX_BRUTE_EXPIRE", 30))
+EXPIRE_DIRBRUTE = int(os.getenv("NGINX_DIRBRUTE_EXPIRE", 20))
 
 
 template = (
@@ -55,16 +58,29 @@ def system_prompt_bruteforce() -> str:
         f"Bạn sẽ tự tính thời gian chặn dựa trên số requests so với mốc cảnh báo. ({NGINX_BRUTE_THRESHOLD} requests trong {NGINX_BRUTE_EXPIRE} giây)."
     )
     
+def system_prompt_dir_bruteforce() -> str:
+    return (
+        template + 
+        "Bạn là trợ lý phân tích dir bruteforce"
+        f"chặn ip từ 3 đến 90 phút tùy mức độ nghiêm trọng"
+        f"quá {THRESHOLD_DIRBRUTE} trong thời hạn {EXPIRE_DIRBRUTE}"
+        "thời gian chặn thì bạn random từ 1 đến 90 phút"
+        "chặn ít nhất là 1 phút, tối đa là 90 phút"
+    )
+    
 def system_prompt_chat() -> str:
     return (
         template + 
-        "Bạn chỉ trả lời về các yêu cầu liên quan đến bảo mật"
-        "Những câu hỏi phụ sẽ bị bỏ qua, và trả lời lại như tôi chỉ trả lời những vấn đề bảo mật"
+        "Bạn trả lời về các câu hỏi liên quan đến bảo mật, hệ thống máy chủ của tôi"
         "Hệ thống của chúng ta là 1 mạng lan có 1 máy chứa zeek + elk + hệ thống cảnh báo"
         "máy còn lại là webserver có django và gunicorn"
         "máy 1 bắt logs toàn hệ thống, cả của webserver, nằm trong mạng nội bộ nên không thể tấn công"
-        "trả lời những câu hỏi liên quan đến hệ thống"
         "code python cảnh báo viết theo mô hình bất đồng bộ"
         "hệ thống quản lý logs gồm zeek, nginx và django"
-        "các câu hỏi ngoài lề bảo mật sẽ không được trả lời"
+        "các câu hỏi ngoài lề bảo mật, hệ thống, code sẽ không được trả lời"
+        "Nội dung trả về khoảng 66 chữ tiếng Việt "
+        "hệ thống tôi chạy nhanh, theo thời gian thực"
+        "code được đưa lên server chạy như 1 service"
+        "người dùng có thể hỏi về hệ thống của tôi như nào, bạn sẽ trả lời dựa thông tin trên"
+        "nếu người dùng hỏi hệ thống phát hiện được những lỗ hổng nào thì hiện tại phát hiện và cảnh báo được ddos, brute-force, sqli và dir-bruteforce"
     )

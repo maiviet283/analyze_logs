@@ -18,7 +18,7 @@ async def realtime_sqli_detector(streamer):
                 continue
 
             msg = (
-                f"[ALERT SQLi DETECTED] Lúc {time} \n"
+                f"[SQLi DETECTED ALERT] Lúc {time} \n"
                 f" - IP: {ip} \n"
                 f" - User-Agent: {user_agent} \n"
                 f" - Method: {method} \n"
@@ -26,3 +26,5 @@ async def realtime_sqli_detector(streamer):
                 f" - Payload: {body}"
             )
             await alert_queue.put({"content": msg, "threat_type": "sqli"})
+            
+            print(f"[SQLi DETECTED ALERT] IP: {ip} - (Lúc {time})")

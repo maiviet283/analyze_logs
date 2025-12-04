@@ -72,6 +72,7 @@ async def realtime_bruteforce_detector(streamer):
                     f" - Đã vượt ngưỡng brute-force với {count} requests trong {EXPIRE} giây."
                 )
                 await alert_queue.put({"content": msg, "threat_type": "bruteforce"})
+                print(f"[Brute-Force ALERT] IP: {ip} - ({vn_time})")
 
         # Cleanup để tránh phình RAM:
         now = loop.time()

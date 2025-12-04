@@ -24,9 +24,9 @@ class ZeekStreamer(BaseStreamer):
             hits = res["hits"]["hits"]
             if hits:
                 self.search_after = hits[0]["sort"]
-                print(f"[FAST-FORWARD-ZEEK] {self.index_pattern} bắt đầu từ log mới nhất")
+                print(f"[FAST-FORWARD] {self.index_pattern} bắt đầu từ log mới nhất")
             else:
-                print(f"[FAST-FORWARD-ZEEK] {self.index_pattern} không có logs")
+                print(f"[FAST-FORWARD] {self.index_pattern} không có logs")
 
             self.fast_forward_done = True
 

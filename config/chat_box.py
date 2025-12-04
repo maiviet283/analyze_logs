@@ -5,7 +5,8 @@ from config.prompt_chat import (
     system_prompt_ddos,
     system_prompt_sqli,
     system_prompt_bruteforce,
-    system_prompt_chat
+    system_prompt_chat,
+    system_prompt_dir_bruteforce
 )
 
 load_dotenv()
@@ -16,6 +17,7 @@ PROMPTS = {
     "ddos": system_prompt_ddos,
     "sqli": system_prompt_sqli,
     "bruteforce": system_prompt_bruteforce,
+    "dir_bruteforce": system_prompt_dir_bruteforce,
     "chat": system_prompt_chat,
 }
 

@@ -1,6 +1,7 @@
 import os
 import httpx
 import asyncio
+import traceback
 from dotenv import load_dotenv
 from .chat_box import generate_ai_recommendation
 from alert.status_elastic import get_elasticsearch_status
@@ -18,7 +19,7 @@ async def send_telegram_message(client: httpx.AsyncClient, text: str):
         r = await client.post(
             f"{BASE_URL}/sendMessage",
             data={"chat_id": CHAT_ID, "text": text},
-            timeout=10
+            timeout=17
         )
 
         data = r.json()
@@ -58,7 +59,7 @@ async def listen_telegram():
 
     offset = None
 
-    async with httpx.AsyncClient(timeout=20.0) as client:
+    async with httpx.AsyncClient(timeout=None) as client:
         while True:
             try:
                 r = await client.get(
@@ -116,5 +117,6 @@ async def listen_telegram():
                         ))
 
             except Exception as e:
-                print("Lỗi polling:", e)
+                print("Lỗi polling:", repr(e))
+                traceback.print_exc()
                 await asyncio.sleep(3)
