@@ -20,7 +20,6 @@ async def get_elasticsearch_status():
 
         # Ghép thông tin
         return (
-            f"Hệ Thống Hoạt Động Ổn Định\n"
             f"Elastic hoạt động bình thường\n"
             f" - Trạng thái: {status}\n"
             f" - Version: {version}\n"

@@ -1,7 +1,5 @@
-django_fetcher.print_sample_logs(n=5, drop_columns=["message"], flatten=True, json_path="sample/zeek_sample.json", csv_path="sample/zeek_sample.csv")
-
 zeek: ddos
-django: sql-injection, xss, csrf
+django: sql-injection
 nginx: brute-force, scan-path
 
 nginx brute-force
@@ -10,3 +8,8 @@ method : "POST" and (path : "/admin/login/" or path : "/api/customers/login/")
 XSS detection (rất giá trị)
 RCE detection (Remote Code Execution)
 LFI/RFI / Path Traversal
+
+
+/summary	Tổng quan tấn công 24h
+/topip	Liệt kê IP tấn công nhiều nhất
+/health Kiểm tra RAM/CPU/Disk

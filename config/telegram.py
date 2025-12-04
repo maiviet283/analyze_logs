@@ -99,9 +99,16 @@ async def listen_telegram():
                             "/chat message : AI sẽ trả lời tất cả những thông tin liên quan đến bảo mật" 
                         ))
                         
-                    elif text == "/status":
+                    elif text == "/elastic":
                         status_text = await get_elasticsearch_status()
                         await send_to(client, chat_id, status_text)
+                        
+                    elif text == "/health":
+                        from alert.health import get_system_health
+                        reply = await get_system_health()
+                        evaluate = await generate_ai_recommendation(reply, "evaluate")
+                        result = reply + "Đánh Giá bởi AI :" + evaluate
+                        await send_to(client, chat_id, result)
                         
                     elif text.startswith("/chat"):
                         _, _, payload = text.partition(" ")

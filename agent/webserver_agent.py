@@ -1,0 +1,170 @@
+#!/usr/bin/env python3
+# /usr/local/bin/webserver_metrics_service.py
+
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
+import time
+import os
+
+HOST = "0.0.0.0"
+PORT = int(os.environ.get("METRICS_PORT", "5002"))
+EXPECTED_TOKEN = os.environ.get("METRICS_TOKEN", "changeme")
+
+
+# ====================== CPU ======================
+def read_cpu_percent():
+    """Đo CPU % sử dụng thông qua /proc/stat (real-time, ổn định)."""
+    try:
+        with open("/proc/stat", "r") as f:
+            a = f.readline().split()[1:]
+        idle1 = int(a[3])
+        total1 = sum(map(int, a))
+
+        time.sleep(0.5)
+
+        with open("/proc/stat", "r") as f:
+            b = f.readline().split()[1:]
+        idle2 = int(b[3])
+        total2 = sum(map(int, b))
+
+        idle_delta = idle2 - idle1
+        total_delta = total2 - total1
+
+        if total_delta == 0:
+            return 0.0
+
+        usage = 100.0 * (1 - idle_delta / total_delta)
+        return round(usage, 2)
+
+    except:
+        return 0.0
+
+
+def read_loadavg():
+    """Load average (1,5,15 min)."""
+    try:
+        with open("/proc/loadavg", "r") as f:
+            l1, l5, l15, *_ = f.readline().split()
+        return float(l1), float(l5), float(l15)
+    except:
+        return 0.0, 0.0, 0.0
+
+
+def cpu_cores():
+    """Số lượng core vật lý / logical."""
+    try:
+        return os.cpu_count()
+    except:
+        return 1
+
+
+# ====================== RAM ======================
+def read_ram():
+    """Trả về total/used/free (GB) + % used."""
+    try:
+        mem = {}
+        with open("/proc/meminfo") as f:
+            for line in f:
+                parts = line.split()
+                key = parts[0].rstrip(":")
+                val = int(parts[1])  # kB
+                mem[key] = val
+
+        total = mem["MemTotal"] * 1024
+        avail = mem["MemAvailable"] * 1024
+        used = total - avail
+
+        gb = 1024 * 1024 * 1024
+        return {
+            "total_gb": round(total / gb, 2),
+            "used_gb": round(used / gb, 2),
+            "free_gb": round(avail / gb, 2),
+            "percent": round((used / total) * 100, 2),
+        }
+
+    except:
+        return {"total_gb": 0, "used_gb": 0, "free_gb": 0, "percent": 0}
+
+
+# ====================== DISK ======================
+def read_disk():
+    """Trả về total/used/free (GB) + % used."""
+    try:
+        st = os.statvfs("/")
+        total = st.f_blocks * st.f_frsize
+        free = st.f_bavail * st.f_frsize
+        used = total - free
+
+        gb = 1024 * 1024 * 1024
+
+        return {
+            "total_gb": round(total / gb, 2),
+            "used_gb": round(used / gb, 2),
+            "free_gb": round(free / gb, 2),
+            "percent": round((used / total) * 100, 2),
+        }
+    except:
+        return {"total_gb": 0, "used_gb": 0, "free_gb": 0, "percent": 0}
+
+
+# ====================== HTTP Handler ======================
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path != "/metrics":
+            self.send_response(404)
+            self.end_headers()
+            return
+
+        token = self.headers.get("X-METRICS-TOKEN", "")
+        if token != EXPECTED_TOKEN:
+            self.send_response(403)
+            self.end_headers()
+            self.wfile.write(b"Forbidden")
+            return
+
+        # Assemble metrics
+        cpu_percent = read_cpu_percent()
+        load1, load5, load15 = read_loadavg()
+        ram = read_ram()
+        disk = read_disk()
+
+        payload = {
+            "host": os.uname().nodename,
+            "timestamp": int(time.time()),
+            "cpu": {
+                "percent": cpu_percent,
+                "load_avg": {
+                    "1m": load1,
+                    "5m": load5,
+                    "15m": load15
+                },
+                "cores": cpu_cores(),
+            },
+            "ram": ram,
+            "disk": disk
+        }
+
+        body = json.dumps(payload).encode("utf-8")
+
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        return
+
+
+def run():
+    server = HTTPServer((HOST, PORT), Handler)
+    print(f"Metrics service running at {HOST}:{PORT}")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        server.shutdown()
+        server.server_close()
+
+
+if __name__ == "__main__":
+    run()

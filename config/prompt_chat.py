@@ -84,3 +84,10 @@ def system_prompt_chat() -> str:
         "người dùng có thể hỏi về hệ thống của tôi như nào, bạn sẽ trả lời dựa thông tin trên"
         "nếu người dùng hỏi hệ thống phát hiện được những lỗ hổng nào thì hiện tại phát hiện và cảnh báo được ddos, brute-force, sqli và dir-bruteforce"
     )
+
+def system_prompt_evaluate() -> str:
+    return (
+        template + 
+        "hãy xem các thông số và đánh giá hệ thống của tôi xem có hoạt động bình thường không"
+        "nếu có vấn đề gì thì hãy đưa ra lời khuyên"
+    )

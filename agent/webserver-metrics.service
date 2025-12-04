@@ -1,0 +1,23 @@
+[Unit]
+Description=Webserver On-Demand Metrics Service
+After=network.target
+
+[Service]
+Type=simple
+Environment=METRICS_TOKEN=m0n0t0n1c-s3cr3t-xxx
+Environment=METRICS_PORT=5002
+ExecStart=/usr/bin/python3 /usr/local/bin/webserver_metrics_service.py
+
+# Giới hạn RAM tối đa 30MB
+MemoryMax=30M
+
+# Khi đạt giới hạn memory → systemd kill service
+# Sau đó Restart=on-failure sẽ tự restart lại
+Restart=on-failure
+RestartSec=3s
+
+User=root
+WorkingDirectory=/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target
