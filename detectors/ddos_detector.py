@@ -4,6 +4,7 @@ import asyncio
 from collections import defaultdict
 from datetime import datetime, timedelta
 
+from controller.topip import add_attack_ip
 from alert.anti_spam import can_alert
 from alert.workers import alert_queue
 
@@ -61,6 +62,8 @@ async def realtime_ddos_detector(streamer):
                 )
                 await alert_queue.put({"content": msg, "threat_type": "ddos"})
                 print(f"[DDoS Scanner ALERT] IP: {ip} - (Ngày {vn_time})")
+                
+                add_attack_ip(ip)
 
         # Cleanup để không leak RAM
         now = loop.time()

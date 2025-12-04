@@ -5,6 +5,7 @@ from collections import defaultdict, deque
 from dotenv import load_dotenv
 from alert.anti_spam import can_alert
 from alert.workers import alert_queue
+from controller.topip import add_attack_ip
 
 load_dotenv()
 
@@ -75,6 +76,8 @@ async def realtime_directory_bruteforce(streamer):
                 })
                 
                 print(f"[Directory Bruteforce ALERT] IP: {ip} - ({vn_time})")
+                
+                add_attack_ip(ip)
 
         # Cleanup
         now = loop.time()

@@ -2,7 +2,6 @@ import os
 import json
 import http.client
 import socket
-from config.elastic import es_async_client
 
 
 WEBSERVER_HOST = os.getenv("WEBSERVER_HOST")

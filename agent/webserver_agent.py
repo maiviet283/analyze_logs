@@ -5,11 +5,30 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import time
 import os
+import subprocess
 
 HOST = "0.0.0.0"
 PORT = int(os.environ.get("METRICS_PORT", "5002"))
 EXPECTED_TOKEN = os.environ.get("METRICS_TOKEN", "changeme")
 
+
+def service_status(service_name):
+    """Kiểm tra trạng thái systemd service."""
+    try:
+        out = subprocess.check_output(["systemctl", "is-active", service_name], stderr=subprocess.STDOUT)
+        status = out.decode().strip()
+        return status  # active, inactive, failed, activating
+    except:
+        return "unknown"
+
+
+def process_exists(keyword):
+    """Fallback: kiểm tra process nếu service không khả dụng."""
+    try:
+        pgrep = subprocess.call(["pgrep", "-f", keyword])
+        return pgrep == 0  # 0 = tìm thấy process
+    except:
+        return False
 
 # ====================== CPU ======================
 def read_cpu_percent():
@@ -110,11 +129,8 @@ def read_disk():
 # ====================== HTTP Handler ======================
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path != "/metrics":
-            self.send_response(404)
-            self.end_headers()
-            return
 
+        # ======== Validate token ========
         token = self.headers.get("X-METRICS-TOKEN", "")
         if token != EXPECTED_TOKEN:
             self.send_response(403)
@@ -122,35 +138,70 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(b"Forbidden")
             return
 
-        # Assemble metrics
-        cpu_percent = read_cpu_percent()
-        load1, load5, load15 = read_loadavg()
-        ram = read_ram()
-        disk = read_disk()
+        # ======== API: /metrics ========
+        if self.path == "/metrics":
+            cpu_percent = read_cpu_percent()
+            load1, load5, load15 = read_loadavg()
+            ram = read_ram()
+            disk = read_disk()
 
-        payload = {
-            "host": os.uname().nodename,
-            "timestamp": int(time.time()),
-            "cpu": {
-                "percent": cpu_percent,
-                "load_avg": {
-                    "1m": load1,
-                    "5m": load5,
-                    "15m": load15
+            payload = {
+                "host": os.uname().nodename,
+                "timestamp": int(time.time()),
+                "cpu": {
+                    "percent": cpu_percent,
+                    "load_avg": {"1m": load1, "5m": load5, "15m": load15},
+                    "cores": cpu_cores(),
                 },
-                "cores": cpu_cores(),
-            },
-            "ram": ram,
-            "disk": disk
-        }
+                "ram": ram,
+                "disk": disk,
+            }
 
-        body = json.dumps(payload).encode("utf-8")
+            body = json.dumps(payload).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
 
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(body)))
+        # ======== API: /nginx-status ========
+        if self.path == "/nginx-status":
+            status = service_status("nginx")
+            if status == "unknown":  # fallback
+                running = process_exists("nginx")
+                status = "active" if running else "inactive"
+
+            payload = {"service": "nginx", "status": status}
+            body = json.dumps(payload).encode()
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        # ======== API: /gunicorn-status ========
+        if self.path == "/gunicorn-status":
+            status = service_status("gunicorn")
+            if status == "unknown":
+                running = process_exists("gunicorn")
+                status = "active" if running else "inactive"
+
+            payload = {"service": "gunicorn", "status": status}
+            body = json.dumps(payload).encode()
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        # ======== Not found ========
+        self.send_response(404)
         self.end_headers()
-        self.wfile.write(body)
 
     def log_message(self, format, *args):
         return

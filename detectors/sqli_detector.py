@@ -1,7 +1,9 @@
 from urllib.parse import unquote
+
 from alert.anti_spam import can_alert
 from alert.workers import alert_queue
 from enums.sqli_patern import SQLI_PATTERN
+from controller.topip import add_attack_ip
 
 
 async def realtime_sqli_detector(streamer):
@@ -28,3 +30,5 @@ async def realtime_sqli_detector(streamer):
             await alert_queue.put({"content": msg, "threat_type": "sqli"})
             
             print(f"[SQLi DETECTED ALERT] IP: {ip} - (Lúc {time})")
+            
+            add_attack_ip(ip)

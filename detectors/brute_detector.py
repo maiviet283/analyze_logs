@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from collections import defaultdict, deque
 from alert.anti_spam import can_alert
 from alert.workers import alert_queue
+from controller.topip import add_attack_ip
 
 load_dotenv()
 
@@ -73,6 +74,8 @@ async def realtime_bruteforce_detector(streamer):
                 )
                 await alert_queue.put({"content": msg, "threat_type": "bruteforce"})
                 print(f"[Brute-Force ALERT] IP: {ip} - ({vn_time})")
+                
+                add_attack_ip(ip)
 
         # Cleanup để tránh phình RAM:
         now = loop.time()
