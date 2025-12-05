@@ -60,7 +60,7 @@ async def realtime_directory_bruteforce(streamer):
 
             count = len(dq)
 
-            if count >= THRESHOLD and can_alert(f"dir-{ip}"):
+            if count >= THRESHOLD and can_alert(ip):
                 msg = (
                     f"[Directory Bruteforce ALERT] {vn_time}\n"
                     f" - IP: {ip}\n"
