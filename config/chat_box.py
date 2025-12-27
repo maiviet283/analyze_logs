@@ -31,8 +31,13 @@ def get_system_prompt(threat_type: str):
     return func()
 
 
-async def generate_ai_recommendation(content: str, threat_type: str):
+async def generate_ai_recommendation(content, threat_type: str):
     try:
+        if isinstance(content, tuple):
+            content = content[0]
+
+        content = str(content)
+
         system_prompt = get_system_prompt(threat_type)
 
         response = await openai_client.chat.completions.create(

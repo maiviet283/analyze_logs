@@ -11,6 +11,40 @@ HOST = "0.0.0.0"
 PORT = int(os.environ.get("METRICS_PORT", "5002"))
 EXPECTED_TOKEN = os.environ.get("METRICS_TOKEN", "changeme")
 
+def systemctl_action(service, action):
+    """Thực hiện start/stop/restart/status systemd service."""
+    if action not in ("start", "stop", "restart", "status"):
+        return {"error": "invalid action"}
+
+    try:
+        out = subprocess.check_output(
+            ["systemctl", action, service],
+            stderr=subprocess.STDOUT,
+            timeout=5
+        )
+        return {
+            "service": service,
+            "action": action,
+            "result": out.decode().strip()
+        }
+    except subprocess.CalledProcessError as e:
+        return {
+            "service": service,
+            "action": action,
+            "error": e.output.decode().strip()
+        }
+
+def nginx_test():
+    try:
+        out = subprocess.check_output(
+            ["nginx", "-t"],
+            stderr=subprocess.STDOUT,
+            timeout=5
+        )
+        return {"result": out.decode().strip()}
+    except subprocess.CalledProcessError as e:
+        return {"error": e.output.decode().strip()}
+
 
 def service_status(service_name):
     """Kiểm tra trạng thái systemd service."""
@@ -29,6 +63,54 @@ def process_exists(keyword):
         return pgrep == 0  # 0 = tìm thấy process
     except:
         return False
+
+
+def get_uptime():
+    try:
+        with open("/proc/uptime") as f:
+            uptime_seconds = float(f.readline().split()[0])
+
+        days = int(uptime_seconds // 86400)
+        hours = int((uptime_seconds % 86400) // 3600)
+        minutes = int((uptime_seconds % 3600) // 60)
+
+        return {
+            "uptime": f"{days}d {hours}h {minutes}m",
+            "loadavg": read_loadavg()
+        }
+    except:
+        return {"uptime": "unknown"}
+
+
+def process_top(limit=10):
+    try:
+        out = subprocess.check_output(
+            ["ps", "-eo", "pid,comm,%cpu,%mem", "--sort=-%cpu"],
+            text=True
+        )
+        lines = out.strip().splitlines()
+        header = lines[0]
+        body = lines[1:limit+1]
+
+        return {
+            "header": header,
+            "processes": body
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def ports_listen():
+    try:
+        out = subprocess.check_output(
+            ["ss", "-lntup"],
+            stderr=subprocess.STDOUT,
+            text=True
+        )
+        return {"result": out.strip()}
+    except Exception as e:
+        return {"error": str(e)}
+
 
 # ====================== CPU ======================
 def read_cpu_percent():
@@ -198,10 +280,82 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
+        
+        # ======== API: /nginx/test ========
+        if self.path == "/nginx-test":
+            payload = nginx_test()
+            body = json.dumps(payload).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        
+        # ======== API: /uptime ========
+        if self.path == "/uptime":
+            payload = get_uptime()
+            body = json.dumps(payload).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        
+        # ======== API: /process/top ========
+        if self.path == "/process/top":
+            payload = process_top()
+            body = json.dumps(payload).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        
+        # ======== API: /ports ========
+        if self.path == "/ports":
+            payload = ports_listen()
+            body = json.dumps(payload).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
 
         # ======== Not found ========
         self.send_response(404)
         self.end_headers()
+        
+        
+    def do_POST(self):
+        token = self.headers.get("X-METRICS-TOKEN", "")
+        if token != EXPECTED_TOKEN:
+            self.send_response(403)
+            self.end_headers()
+            return
+
+        if self.path.startswith("/nginx/"):
+            action = self.path.split("/")[-1]
+            payload = systemctl_action("nginx", action)
+
+        elif self.path.startswith("/gunicorn/"):
+            action = self.path.split("/")[-1]
+            payload = systemctl_action("gunicorn", action)
+
+        else:
+            self.send_response(404)
+            self.end_headers()
+            return
+
+        body = json.dumps(payload).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def log_message(self, format, *args):
         return

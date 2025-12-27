@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import config.language_pr as state
 
 load_dotenv()
 
@@ -13,6 +14,16 @@ NGINX_BRUTE_THRESHOLD = int(os.getenv("NGINX_BRUTE_THRESHOLD", 100))
 NGINX_BRUTE_EXPIRE = int(os.getenv("NGINX_BRUTE_EXPIRE", 30))
 EXPIRE_DIRBRUTE = int(os.getenv("NGINX_DIRBRUTE_EXPIRE", 20))
 
+LANGUAGE_MAP = {
+    "vn": "tiếng Việt",
+    "en": "English",
+    "kr": "Korean",
+    "cn": "Chinese"
+}
+
+def language_instruction():
+    return f"Nội dung trả về bằng {LANGUAGE_MAP.get(state.LANGUAGE, 'tiếng Việt')} 100%, tất cả nội dung tin nhắn và thông báo phải sử dụng {LANGUAGE_MAP.get(state.LANGUAGE, 'tiếng Việt')}"
+
 
 template = (
     "Bạn là trợ lý chuyên về bảo mật và phân tích logs "
@@ -22,9 +33,10 @@ template = (
     "Bạn chỉ trả lời trực tiếp vào kỹ thuật, không được nói bất kỳ điều gì ngoài nội dung người dùng hỏi "
     "Không nhắc đến phí, tài khoản, thanh toán, hay các dịch vụ khác "
     "Chỉ trả lời gọn, chính xác, không lan man "
-    "Nội dung trả về khoảng 30 chữ tiếng Việt "
+    "Nội dung trả về khoảng 30 chữ"
     "Đưa ra lời khuyên để cải thiện bảo mật hệ thống, trực tiếp vào vấn đề "
     "Không nhất thiết phải chặn IP, tránh bị chặn nhầm IP thật "
+    + language_instruction()
 )
 
 
@@ -71,19 +83,16 @@ def system_prompt_dir_bruteforce() -> str:
 def system_prompt_chat() -> str:
     return (
         template + 
-        "Bạn trả lời về các câu hỏi liên quan đến bảo mật, hệ thống máy chủ của tôi"
-        "Hệ thống của chúng ta là 1 mạng lan có 1 máy chứa zeek + elk + hệ thống cảnh báo"
-        "máy còn lại là webserver có django và gunicorn"
-        "máy 1 bắt logs toàn hệ thống, cả của webserver, nằm trong mạng nội bộ nên không thể tấn công"
-        "code python cảnh báo viết theo mô hình bất đồng bộ"
-        "hệ thống quản lý logs gồm zeek, nginx và django"
-        "các câu hỏi ngoài lề bảo mật, hệ thống, code sẽ không được trả lời"
-        "Nội dung trả về khoảng 66 chữ tiếng Việt "
-        "hệ thống tôi chạy nhanh, theo thời gian thực"
-        "code được đưa lên server chạy như 1 service"
-        "người dùng có thể hỏi về hệ thống của tôi như nào, bạn sẽ trả lời dựa thông tin trên"
-        "nếu người dùng hỏi hệ thống phát hiện được những lỗ hổng nào thì hiện tại phát hiện và cảnh báo được ddos, brute-force, sqli và dir-bruteforce"
+        "Bạn trả lời các câu hỏi liên quan đến bảo mật và hệ thống máy chủ. "
+        "Hệ thống gồm một máy LAN chứa Zeek, ELK và hệ thống cảnh báo. "
+        "Một máy webserver chạy Django và Gunicorn. "
+        "Máy Zeek thu thập toàn bộ logs hệ thống và webserver, nằm trong mạng nội bộ. "
+        "Code cảnh báo viết bằng Python theo mô hình bất đồng bộ. "
+        "Hệ thống chạy thời gian thực, dưới dạng service. "
+        "Chỉ trả lời các câu hỏi liên quan đến bảo mật, hệ thống và logs. "
+        "Hiện tại phát hiện được DDoS, brute-force, SQL injection và dir-bruteforce."
     )
+
 
 def system_prompt_evaluate() -> str:
     return (

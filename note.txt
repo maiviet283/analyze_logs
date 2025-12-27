@@ -1,15 +1,1 @@
-zeek: ddos
-django: sql-injection
-nginx: brute-force, scan-path
-
-nginx brute-force
-method : "POST" and (path : "/admin/login/" or path : "/api/customers/login/")
-
-XSS detection (rất giá trị)
-RCE detection (Remote Code Execution)
-LFI/RFI / Path Traversal
-
-
-/summary	Tổng quan tấn công 24h
-/topip	Liệt kê IP tấn công nhiều nhất
-/health Kiểm tra RAM/CPU/Disk
+tan cong mang
