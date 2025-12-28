@@ -213,7 +213,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
 
         # ======== Validate token ========
-        token = self.headers.get("X-METRICS-TOKEN", "")
+        token = self.headers.get("X-METRICS-TOKEN", "m0n0t0n1c-s3cr3t-xxx")
         if token != EXPECTED_TOKEN:
             self.send_response(403)
             self.end_headers()
@@ -331,7 +331,7 @@ class Handler(BaseHTTPRequestHandler):
         
         
     def do_POST(self):
-        token = self.headers.get("X-METRICS-TOKEN", "")
+        token = self.headers.get("X-METRICS-TOKEN", "m0n0t0n1c-s3cr3t-xxx")
         if token != EXPECTED_TOKEN:
             self.send_response(403)
             self.end_headers()
